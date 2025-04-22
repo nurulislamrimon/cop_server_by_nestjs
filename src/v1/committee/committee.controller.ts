@@ -56,6 +56,13 @@ export class CommitteeController {
 
     const result = await this.committeeService.findAll({
       where: finalWhere,
+      include: {
+        member: {
+          select: {
+            full_name: true,
+          },
+        },
+      },
       ...formatPagination(pagination),
     });
     return {
@@ -82,6 +89,13 @@ export class CommitteeController {
 
     const result = await this.committeeService.findAll({
       where,
+      include: {
+        member: {
+          select: {
+            full_name: true,
+          },
+        },
+      },
       ...formatPagination(pagination),
     });
     return {

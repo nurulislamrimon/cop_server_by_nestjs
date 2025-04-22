@@ -39,7 +39,10 @@ model Member {
   deleted_at      DateTime?
   access_rule     Member_access_rule? @relation("AdministatorToAccessrule", fields: [role], references: [role])
   member_sessions Member_session[]    @relation("SessionToMember")
-  Committee       Committee[]         @relation("CommitteeToMember")
+  committee       Committee[]         @relation("CommitteeToMember")
+  transaction     Transaction[]       @relation("TransactionToMember")
+  collected       Transaction[]       @relation("CollectorToMember")
+  Transaction     Transaction[]       @relation("ApproverToMember")
 
   @@index([email])
 }
@@ -73,16 +76,14 @@ model Committee {
   id                Int                 @id @default(autoincrement())
   type_of_committee Committee_type_enum @default(executive)
   designation       String
-
-  selected_at DateTime  @default(now())
-  valid_till  DateTime?
-
-  member_id Int?
-  member    Member? @relation("CommitteeToMember", fields: [member_id], references: [id], onDelete: Cascade)
-
-  created_at DateTime  @default(now())
-  updated_at DateTime  @updatedAt
-  deleted_at DateTime?
+  member_id         Int?
+  // date fields
+  selected_at       DateTime            @default(now())
+  valid_till        DateTime?
+  created_at        DateTime            @default(now())
+  updated_at        DateTime            @updatedAt
+  deleted_at        DateTime?
+  member            Member?             @relation("CommitteeToMember", fields: [member_id], references: [id], onDelete: Cascade)
 
   @@unique([designation, member_id])
 }
@@ -90,4 +91,33 @@ model Committee {
 enum Committee_type_enum {
   director
   executive
+}
+
+model Transaction {
+  id       Int                   @id @default(autoincrement())
+  trx_type Transaction_type_enum @default(Deposit)
+  amount   Int
+  note     String?
+
+  member_id    Int?
+  collector_id Int?
+  approver_id  Int?
+  // date fields
+  selected_at  DateTime  @default(now())
+  valid_till   DateTime?
+  created_at   DateTime  @default(now())
+  updated_at   DateTime  @updatedAt
+  deleted_at   DateTime?
+  member       Member?   @relation("TransactionToMember", fields: [member_id], references: [id], onDelete: Cascade)
+  collector    Member?   @relation("CollectorToMember", fields: [collector_id], references: [id], onDelete: Cascade)
+  approver     Member?   @relation("ApproverToMember", fields: [approver_id], references: [id], onDelete: Cascade)
+}
+
+enum Transaction_type_enum {
+  Deposit
+  Withdraw
+  Profit
+  Lose
+  Expense
+  Investment
 }
