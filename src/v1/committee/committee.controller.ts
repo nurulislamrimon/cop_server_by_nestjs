@@ -21,6 +21,7 @@ import {
 } from './committee.constants';
 import { formatPagination } from 'src/utils/format.utils';
 import { JwtPayload } from 'jsonwebtoken';
+import { Public } from 'src/decorators/public.decorator';
 
 @Controller('v1/committee')
 export class CommitteeController {
@@ -32,6 +33,33 @@ export class CommitteeController {
   }
 
   @Get()
+  @Public()
+  @UseInterceptors(
+    new SearchFilterAndPaginationInterceptor<'Committee'>(
+      committeeSearchableFields,
+      committeeFilterableFields,
+    ),
+  )
+  async findAllPublic(@Req() req: Request) {
+    const where = req['where'];
+    const pagination = req['pagination'] as JwtPayload;
+
+    const result = await this.committeeService.findAll({
+      where,
+      ...formatPagination(pagination),
+    });
+    return {
+      data: result.data,
+      meta: {
+        total: result.total,
+        page: Number(pagination.page),
+        limit: Number(pagination.limit),
+      },
+    };
+  }
+
+  @Get('by-admin')
+  @Public()
   @UseInterceptors(
     new SearchFilterAndPaginationInterceptor<'Committee'>(
       committeeSearchableFields,

@@ -22,31 +22,24 @@ enum AccountStatusEnum {
   deleted
 }
 
-// members role enum
-enum MemberRoleEnum {
-  administrative_manager
-  administrative_admin
-  super_admin
-}
-
 // while creating a new model make sure added the model to the IModelMapping else filter and search will not work
 model Member {
-  id              Int                @id @default(autoincrement())
+  id              Int                 @id @default(autoincrement())
   full_name       String
   phone_number    String
-  email           String             @unique
+  email           String              @unique
   password        String
-  role            MemberRoleEnum     @default(administrative_manager)
+  role            String?
   profile_photo   String?
   address         String?
-  is_active       Boolean            @default(true)
-  account_status  AccountStatusEnum  @default(active)
-  created_at      DateTime           @default(now())
-  updated_at      DateTime           @updatedAt
+  is_active       Boolean             @default(true)
+  account_status  AccountStatusEnum   @default(active)
+  created_at      DateTime            @default(now())
+  updated_at      DateTime            @updatedAt
   deleted_at      DateTime?
-  access_rule     Member_access_rule @relation("AdministatorToAccessrule", fields: [role], references: [role])
-  member_sessions Member_session[]   @relation("SessionToMember")
-  Committee       Committee[]        @relation("CommitteeToMember")
+  access_rule     Member_access_rule? @relation("AdministatorToAccessrule", fields: [role], references: [role])
+  member_sessions Member_session[]    @relation("SessionToMember")
+  Committee       Committee[]         @relation("CommitteeToMember")
 
   @@index([email])
 }
@@ -67,13 +60,13 @@ model Member_session {
 }
 
 model Member_access_rule {
-  id         Int            @id @default(autoincrement())
-  role       MemberRoleEnum @unique
+  id         Int       @id @default(autoincrement())
+  role       String    @unique
   rules      Json
-  created_at DateTime       @default(now())
-  updated_at DateTime       @updatedAt
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
   deleted_at DateTime?
-  member     Member[]       @relation("AdministatorToAccessrule")
+  member     Member[]  @relation("AdministatorToAccessrule")
 }
 
 model Committee {

@@ -1,5 +1,4 @@
-import { MemberRoleEnum } from '@prisma/client';
-import { IsArray, IsEnum, IsIn, IsString } from 'class-validator';
+import { IsArray, IsIn, IsString } from 'class-validator';
 import {
   permissionActions,
   memberPermissionResources,
@@ -7,8 +6,7 @@ import {
 
 export class CreateMemberAccessRuleDto {
   @IsString()
-  @IsEnum(MemberRoleEnum)
-  role: MemberRoleEnum;
+  role: string;
 
   @IsArray()
   @IsIn(

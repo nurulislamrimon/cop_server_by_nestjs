@@ -17,7 +17,7 @@ import {
 import { formatPagination } from '../../utils/format.utils';
 import { memberSelectedFields } from '../member/member.constants';
 import { JwtPayload } from 'jsonwebtoken';
-import { AllowMemberOnlyIf } from '../../decorators/AllowMemberOnlyIf.decorator';
+import { AllowIf } from 'src/decorators/AllowIf.decorator';
 
 @Controller('v1/member-session')
 export class MemberSessionController {
@@ -34,7 +34,7 @@ export class MemberSessionController {
       memberSessionFilterableFields,
     ),
   )
-  @AllowMemberOnlyIf('member_session:read')
+  @AllowIf('member_session:read')
   async findAll(@Req() req: Request) {
     const where = req['where'];
     const pagination = req['pagination'] as Record<string, string | number>;
@@ -101,7 +101,7 @@ export class MemberSessionController {
    * Message: Get One - member-session
    */
   @Get(':id')
-  @AllowMemberOnlyIf('member_session:read')
+  @AllowIf('member_session:read')
   async findOne(@Param('id', ParseIntPipe) id: string) {
     const data = await this.memberSessionService.findUnique({
       where: { id: +id },

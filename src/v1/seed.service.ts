@@ -1,4 +1,3 @@
-import { MemberRoleEnum } from '@prisma/client';
 import * as bcrypt from 'bcryptjs';
 import { saltRounds } from '../constants/common.constants';
 import { PrismaService } from '../lib/prisma/prisma.service';
@@ -13,7 +12,7 @@ export async function seedService() {
     // create rule
     await prisma.member_access_rule.create({
       data: {
-        role: MemberRoleEnum.super_admin,
+        role: 'super_admin',
         rules: [],
       },
     });
@@ -24,7 +23,7 @@ export async function seedService() {
         full_name: 'Nurul Islam Rimon',
         email: 'nurulislamrimon@gmail.com',
         password,
-        role: MemberRoleEnum.super_admin,
+        role: 'super_admin',
         phone_number: '01715494846',
       },
     });

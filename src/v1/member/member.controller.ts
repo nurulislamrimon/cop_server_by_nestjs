@@ -34,7 +34,7 @@ import { SearchFilterAndPaginationInterceptor } from '../../interceptors/searchF
 import { formatPagination } from '../../utils/format.utils';
 import { MailService } from '../../lib/mail/mail.service';
 import { Member, Member_access_rule } from '@prisma/client';
-import { AllowMemberOnlyIf } from '../../decorators/AllowMemberOnlyIf.decorator';
+import { AllowIf } from 'src/decorators/AllowIf.decorator';
 
 @Controller('v1/member')
 export class MemberController {
@@ -50,7 +50,7 @@ export class MemberController {
    * Message: Create - member
    */
   @Get('mail/:email')
-  @AllowMemberOnlyIf('member:read')
+  @AllowIf('member:read')
   async testMail(@Param('email') email: string) {
     const result = await this.mailService.send({
       to: email,
@@ -68,7 +68,7 @@ export class MemberController {
    * Message: Create - member
    */
   @Post('add')
-  @AllowMemberOnlyIf('member:write')
+  @AllowIf('member:write')
   async create(@Body() createMemberDto: CreateMemberDto) {
     const isExist = await this.memberService.findUnique({
       where: { email: createMemberDto.email },
@@ -158,6 +158,38 @@ export class MemberController {
    * API: Controller
    * Message: Get All - member
    */
+  @Get('by-admin')
+  @AllowIf('member:read')
+  @UseInterceptors(
+    new SearchFilterAndPaginationInterceptor<'Member'>(
+      memberSearchableFields,
+      memberFilterableFields,
+    ),
+  )
+  async findAllByAdmin(@Req() req: Request) {
+    const where = req['where'];
+    const pagination = req['pagination'] as Record<string, string | number>;
+    const data = await this.memberService.findAll({
+      where,
+      select: memberSelectedFields,
+      ...formatPagination(pagination),
+    });
+
+    return {
+      message: 'Member retrived successfully',
+      meta: {
+        total: data.total,
+        limit: Number(pagination.limit),
+        page: Number(pagination.page),
+      },
+      data: data.members,
+    };
+  }
+
+  /**
+   * API: Controller
+   * Message: Get All - member
+   */
   @Get()
   @UseInterceptors(
     new SearchFilterAndPaginationInterceptor<'Member'>(
@@ -165,12 +197,23 @@ export class MemberController {
       memberFilterableFields,
     ),
   )
-  @AllowMemberOnlyIf('member:read')
+  @Public()
   async findAll(@Req() req: Request) {
     const where = req['where'];
     const pagination = req['pagination'] as Record<string, string | number>;
+
+    const finalWhere = {
+      AND: [
+        {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+          ...(where.AND || []),
+          is_active: true,
+        },
+      ],
+    };
+
     const data = await this.memberService.findAll({
-      where,
+      where: finalWhere,
       select: memberSelectedFields,
       ...formatPagination(pagination),
     });
@@ -210,7 +253,7 @@ export class MemberController {
    * Message: Get One - member
    */
   @Get(':id')
-  @AllowMemberOnlyIf('member:read')
+  @AllowIf('member:read')
   async findOne(@Param('id', ParseIntPipe) id: string) {
     const isExist = await this.memberService.findUniqueWithPhoto({
       where: { id: +id },
@@ -247,7 +290,7 @@ export class MemberController {
    * Message: Update - member
    */
   @Patch(':id')
-  @AllowMemberOnlyIf('member:update')
+  @AllowIf('member:update')
   async updateById(
     @Param('id', ParseIntPipe) id: string,
     @Body() updateMemberDto: UpdateMemberDto,
@@ -270,7 +313,7 @@ export class MemberController {
    * Message: Delete - member
    */
   @Delete(':id')
-  @AllowMemberOnlyIf('member:delete')
+  @AllowIf('member:delete')
   async remove(@Param('id', ParseIntPipe) id: string) {
     const data = await this.memberService.remove(+id);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

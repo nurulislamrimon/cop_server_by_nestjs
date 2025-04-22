@@ -22,7 +22,7 @@ import {
 import { formatPagination } from '../../utils/format.utils';
 import { Request } from 'express';
 import { JwtPayload } from 'jsonwebtoken';
-import { AllowMemberOnlyIf } from '../../decorators/AllowMemberOnlyIf.decorator';
+import { AllowIf } from 'src/decorators/AllowIf.decorator';
 
 @Controller('v1/member-access-rule')
 export class MemberAccessRuleController {
@@ -33,7 +33,7 @@ export class MemberAccessRuleController {
    * Message: Create - Access Rule
    */
   @Post()
-  @AllowMemberOnlyIf('member_access_rule:write')
+  @AllowIf('member_access_rule:write')
   async create(@Body() createAccessRuleDto: CreateMemberAccessRuleDto) {
     return await this.accessRuleService.create(createAccessRuleDto);
   }
@@ -43,7 +43,7 @@ export class MemberAccessRuleController {
    * Message: Get All - Access Rule
    */
   @Get()
-  @AllowMemberOnlyIf('member_access_rule:read')
+  @AllowIf('member_access_rule:read')
   @UseInterceptors(
     new SearchFilterAndPaginationInterceptor<'Member_access_rule'>(
       member_access_ruleSearchableFields,
@@ -90,7 +90,7 @@ export class MemberAccessRuleController {
    * Message: Get One - Access Rule
    */
   @Get(':id')
-  @AllowMemberOnlyIf('member_access_rule:read')
+  @AllowIf('member_access_rule:read')
   async findOne(@Param('id', ParseIntPipe) id: string) {
     const isExist = await this.accessRuleService.findOne({
       where: { id: +id },
@@ -106,7 +106,7 @@ export class MemberAccessRuleController {
    * Message: Update - Access Rule
    */
   @Patch(':id')
-  @AllowMemberOnlyIf('member_access_rule:update')
+  @AllowIf('member_access_rule:update')
   async update(
     @Param('id', ParseIntPipe) id: string,
     @Body() updateAccessRuleDto: UpdateMemberAccessRuleDto,
@@ -125,7 +125,7 @@ export class MemberAccessRuleController {
    * Message: Delete - Access Rule
    */
   @Delete(':id')
-  @AllowMemberOnlyIf('member_access_rule:delete')
+  @AllowIf('member_access_rule:delete')
   async remove(@Param('id', ParseIntPipe) id: string) {
     const isExist = await this.accessRuleService.findOne({
       where: { id: +id },

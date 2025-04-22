@@ -1,12 +1,5 @@
-import { MemberRoleEnum } from '@prisma/client';
 import { Transform } from 'class-transformer';
-import {
-  IsBoolean,
-  IsEmail,
-  IsEnum,
-  IsOptional,
-  IsString,
-} from 'class-validator';
+import { IsBoolean, IsEmail, IsOptional, IsString } from 'class-validator';
 
 export class CreateMemberDto {
   @IsString()
@@ -20,9 +13,9 @@ export class CreateMemberDto {
   @Transform(({ value }: { value: string }) => value?.toLowerCase()?.trim())
   email: string;
 
-  @IsEnum(MemberRoleEnum)
+  @IsString()
   @IsOptional()
-  role: MemberRoleEnum;
+  role: string;
 
   @IsString()
   password: string;
