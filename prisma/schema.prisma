@@ -77,15 +77,15 @@ model Member_access_rule {
 }
 
 model Committee {
-  id                Int    @id @default(autoincrement())
-  type_of_committee String
+  id                Int                 @id @default(autoincrement())
+  type_of_committee Committee_type_enum @default(executive)
   designation       String
 
   selected_at DateTime  @default(now())
   valid_till  DateTime?
 
-  member_id Int
-  member    Member @relation("CommitteeToMember", fields: [member_id], references: [id], onDelete: Cascade)
+  member_id Int?
+  member    Member? @relation("CommitteeToMember", fields: [member_id], references: [id], onDelete: Cascade)
 
   created_at DateTime  @default(now())
   updated_at DateTime  @updatedAt
