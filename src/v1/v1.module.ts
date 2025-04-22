@@ -3,6 +3,7 @@ import { MemberModule } from './member/member.module';
 import { MemberSessionModule } from './member-session/member-session.module';
 import { MemberAccessRuleModule } from './member-access-rule/member-access-rule.module';
 import { CommitteeModule } from './committee/committee.module';
+import { TransactionModule } from './transaction/transaction.module';
 
 @Module({
   imports: [
@@ -10,6 +11,7 @@ import { CommitteeModule } from './committee/committee.module';
     MemberSessionModule,
     MemberAccessRuleModule,
     CommitteeModule,
+    TransactionModule,
   ],
 })
 export class V1Modules {}
