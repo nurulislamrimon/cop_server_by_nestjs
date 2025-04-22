@@ -3,6 +3,7 @@ export const memberPermissionResources = [
   'member_access_rule',
   'member_session',
   'committee',
+  'transaction',
 ] as const;
 
 export const permissionActions = [

@@ -103,6 +103,7 @@ model Transaction {
   created_by_id Int?
   collector_id  Int?
   approver_id   Int?
+  collected_at  DateTime              @default(now())
   created_at    DateTime              @default(now())
   updated_at    DateTime              @updatedAt
   deleted_at    DateTime?

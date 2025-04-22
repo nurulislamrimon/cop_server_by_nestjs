@@ -1,5 +1,7 @@
 import { Transaction_type_enum } from '@prisma/client';
+import { Type } from 'class-transformer';
 import {
+  IsDate,
   IsEnum,
   IsNumber,
   IsOptional,
@@ -39,4 +41,9 @@ export class CreateTransactionDto {
   @IsNumber()
   @IsPositive()
   approver_id: number;
+
+  @IsOptional()
+  @IsDate()
+  @Type(() => Date)
+  collected_at: Date;
 }

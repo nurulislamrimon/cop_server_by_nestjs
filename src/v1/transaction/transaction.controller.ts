@@ -22,12 +22,14 @@ import {
   transactionSearchableFields,
 } from './transaction.constants';
 import { formatPagination } from 'src/utils/format.utils';
+import { AllowIf } from 'src/decorators/AllowIf.decorator';
 
-@Controller('transaction')
+@Controller('v1/transaction')
 export class TransactionController {
   constructor(private readonly transactionService: TransactionService) {}
 
-  @Post()
+  @Post('add')
+  @AllowIf('transaction:write')
   create(
     @Req() req: Request,
     @Body() createTransactionDto: CreateTransactionDto,
@@ -37,14 +39,15 @@ export class TransactionController {
     return this.transactionService.create(createTransactionDto);
   }
 
-  @Get()
+  @Get('by-admin')
   @UseInterceptors(
     new SearchFilterAndPaginationInterceptor<'Transaction'>(
       transactionSearchableFields,
       transactionFilterableFields,
     ),
   )
-  async findAll(@Req() req: Request) {
+  @AllowIf('transaction:read')
+  async findAllByAdmin(@Req() req: Request) {
     const where = req['where'];
     const pagination = req['pagination'] as Record<string, unknown>;
     const result = await this.transactionService.findAll({
@@ -61,7 +64,37 @@ export class TransactionController {
     };
   }
 
+  @Get()
+  @UseInterceptors(
+    new SearchFilterAndPaginationInterceptor<'Transaction'>(
+      transactionSearchableFields,
+      transactionFilterableFields,
+    ),
+  )
+  async findAll(@Req() req: Request) {
+    const where = req['where'];
+    const pagination = req['pagination'] as Record<string, unknown>;
+    const user = req['user'] as JwtPayload;
+    const finalWhere = {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      AND: [...(where.AND || []), { member_id: user.id }],
+    };
+    const result = await this.transactionService.findAll({
+      where: finalWhere,
+      ...formatPagination(pagination),
+    });
+    return {
+      data: result.data,
+      meta: {
+        total: result.total,
+        page: Number(pagination.page),
+        limit: Number(pagination.limit),
+      },
+    };
+  }
+
   @Get(':id')
+  @AllowIf('transaction:read')
   async findOne(@Param('id', ParseIntPipe) id: string) {
     const isExist = await this.transactionService.findOne({
       where: { id: +id },
@@ -73,6 +106,7 @@ export class TransactionController {
   }
 
   @Patch(':id')
+  @AllowIf('transaction:update')
   async update(
     @Param('id', ParseIntPipe) id: string,
     @Body() updateTransactionDto: UpdateTransactionDto,
@@ -87,6 +121,7 @@ export class TransactionController {
   }
 
   @Delete(':id')
+  @AllowIf('transaction:delete')
   async remove(@Param('id', ParseIntPipe) id: string) {
     const isExist = await this.transactionService.findOne({
       where: { id: +id },
