@@ -94,23 +94,22 @@ enum Committee_type_enum {
 }
 
 model Transaction {
-  id       Int                   @id @default(autoincrement())
-  trx_type Transaction_type_enum @default(Deposit)
-  amount   Int
-  note     String?
-
+  id           Int                   @id @default(autoincrement())
+  trx_type     Transaction_type_enum @default(Deposit)
+  amount       Int
+  note         String?
   member_id    Int?
   collector_id Int?
   approver_id  Int?
   // date fields
-  selected_at  DateTime  @default(now())
+  selected_at  DateTime              @default(now())
   valid_till   DateTime?
-  created_at   DateTime  @default(now())
-  updated_at   DateTime  @updatedAt
+  created_at   DateTime              @default(now())
+  updated_at   DateTime              @updatedAt
   deleted_at   DateTime?
-  member       Member?   @relation("TransactionToMember", fields: [member_id], references: [id], onDelete: Cascade)
-  collector    Member?   @relation("CollectorToMember", fields: [collector_id], references: [id], onDelete: Cascade)
-  approver     Member?   @relation("ApproverToMember", fields: [approver_id], references: [id], onDelete: Cascade)
+  member       Member?               @relation("TransactionToMember", fields: [member_id], references: [id], onDelete: Cascade)
+  collector    Member?               @relation("CollectorToMember", fields: [collector_id], references: [id], onDelete: Cascade)
+  approver     Member?               @relation("ApproverToMember", fields: [approver_id], references: [id], onDelete: Cascade)
 }
 
 enum Transaction_type_enum {
