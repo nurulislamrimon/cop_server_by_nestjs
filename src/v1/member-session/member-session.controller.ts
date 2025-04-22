@@ -19,7 +19,7 @@ import { memberSelectedFields } from '../member/member.constants';
 import { JwtPayload } from 'jsonwebtoken';
 import { AllowMemberOnlyIf } from '../../decorators/AllowMemberOnlyIf.decorator';
 
-@Controller('v1/members-session')
+@Controller('v1/member-session')
 export class MemberSessionController {
   constructor(private readonly memberSessionService: MemberSessionService) {}
 
