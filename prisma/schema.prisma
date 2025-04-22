@@ -1,0 +1,76 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-1.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum AccountStatusEnum {
+  active
+  inactive
+  postpond
+  blocked
+  terminated
+  deleted
+}
+
+// members role enum
+enum MemberRoleEnum {
+  administrative_manager
+  administrative_admin
+  super_admin
+}
+
+// while creating a new model make sure added the model to the IModelMapping else filter and search will not work
+model Member {
+  id              Int                @id @default(autoincrement())
+  full_name       String
+  phone_number    String
+  email           String             @unique
+  password        String
+  role            MemberRoleEnum     @default(administrative_manager)
+  profile_photo   String?
+  address         String?
+  is_active       Boolean            @default(true)
+  account_status  AccountStatusEnum  @default(active)
+  created_at      DateTime           @default(now())
+  updated_at      DateTime           @updatedAt
+  deleted_at      DateTime?
+  access_rule     Member_access_rule @relation("AdministatorToAccessrule", fields: [role], references: [role])
+  member_sessions Member_session[]   @relation("SessionToMember")
+
+  @@index([email])
+}
+
+model Member_session {
+  id         Int       @id @default(autoincrement())
+  ip         String
+  user_agent String
+  device     String
+  platform   String
+  browser    String
+  // dates
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
+  member_id  Int
+  member     Member?   @relation("SessionToMember", fields: [member_id], references: [id], onDelete: Cascade)
+}
+
+model Member_access_rule {
+  id         Int            @id @default(autoincrement())
+  role       MemberRoleEnum @unique
+  rules      Json
+  created_at DateTime       @default(now())
+  updated_at DateTime       @updatedAt
+  deleted_at DateTime?
+  member     Member[]       @relation("AdministatorToAccessrule")
+}
