@@ -46,7 +46,7 @@ model Member {
   collected            Transaction[]         @relation("CollectorToMember")
   trx_approved         Transaction[]         @relation("ApproverToMember")
   created_trx          Transaction[]         @relation("CreatedByToMember")
-  Transaction_snapshot Transaction_snapshot? @relation("TrxSnapshotToMember")
+  transaction_snapshot Transaction_snapshot? @relation("TrxSnapshotToMember")
 
   @@index([email])
 }

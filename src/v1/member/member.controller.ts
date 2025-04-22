@@ -239,6 +239,7 @@ export class MemberController {
       where: { id: +id },
       select: {
         ...memberSelectedFields,
+        transaction_snapshot: true,
         access_rule: { select: { rules: true } },
       },
     });
