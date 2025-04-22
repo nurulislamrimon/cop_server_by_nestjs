@@ -27,7 +27,7 @@ import { Public } from 'src/decorators/public.decorator';
 export class CommitteeController {
   constructor(private readonly committeeService: CommitteeService) {}
 
-  @Post()
+  @Post('add')
   create(@Body() createCommitteeDto: CreateCommitteeDto) {
     return this.committeeService.create(createCommitteeDto);
   }
