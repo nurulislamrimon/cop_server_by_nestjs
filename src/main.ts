@@ -14,14 +14,14 @@ async function bootstrap() {
   void seedService();
 
   // cors controle
-  const allowedOrigins = envConfig.client_url?.split(',') || [
-    'http://localhost:3000',
-  ];
-  app.enableCors({
-    origin: allowedOrigins,
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true,
-  });
+ // const allowedOrigins = envConfig.client_url?.split(',') || [
+   // 'http://localhost:3000',
+  // ];
+  // app.enableCors({
+  //   origin: allowedOrigins,
+  //   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  //   credentials: true,
+  // });
 
   // static repository
   app.useStaticAssets(join(__dirname, '..', 'public'));
