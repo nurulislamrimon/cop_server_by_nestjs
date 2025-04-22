@@ -1,3 +1,34 @@
+# Combination of Power
+
+## By Nurul Islam Rimon
+
+Live [Preview](https://cop-server-by-nestjs.vercel.app)
+
+Gratitude:
+
+1. [NestJs](https://nestjs.com/) as NodeJs Library
+2. [Render](render.com) for Free MySql server
+3. [Cloudflare](https://www.cloudflare.com/) for Object Storage
+4. [Vercel](https://vercel.com/) for Deployment
+
+Required Env:
+
+```
+# postgres
+DATABASE_URL="your_postgres_url"
+
+# cloudflare
+CLOUDFLARE_R2_ENDPOINT=cloudflare_endpoint
+CLOUDFLARE_R2_ACCESS_KEY=cloudflare_access_key
+CLOUDFLARE_R2_SECRET_KEY=cloudflare_secret_key
+CLOUDFLARE_BUCKET_NAME=cloudflare_bucket_name
+
+# mail config
+MAIL_HOST=your_mail_host
+MAIL_USER=mail_user
+MAIL_PASSWORD=mail_password
+```
+
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
 </p>
