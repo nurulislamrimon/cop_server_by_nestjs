@@ -204,11 +204,9 @@ export class MemberController {
 
     const finalWhere = {
       AND: [
-        {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-          ...(where.AND || []),
-          is_active: true,
-        },
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        ...(where.AND || []),
+        { is_active: true },
       ],
     };
 

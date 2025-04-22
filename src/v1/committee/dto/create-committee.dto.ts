@@ -1,4 +1,5 @@
 import { Committee_type_enum } from '@prisma/client';
+import { Type } from 'class-transformer';
 import {
   IsDate,
   IsEnum,
@@ -16,12 +17,14 @@ export class CreateCommitteeDto {
   @IsString()
   designation: string;
 
-  @IsDate()
   @IsOptional()
+  @IsDate()
+  @Type(() => Date)
   selected_at: Date;
 
-  @IsDate()
   @IsOptional()
+  @IsDate()
+  @Type(() => Date)
   valid_till: Date;
 
   @IsNumber()

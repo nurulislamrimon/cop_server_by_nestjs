@@ -22,12 +22,14 @@ import {
 import { formatPagination } from 'src/utils/format.utils';
 import { JwtPayload } from 'jsonwebtoken';
 import { Public } from 'src/decorators/public.decorator';
+import { AllowIf } from 'src/decorators/AllowIf.decorator';
 
 @Controller('v1/committee')
 export class CommitteeController {
   constructor(private readonly committeeService: CommitteeService) {}
 
   @Post('add')
+  @AllowIf('committee:write')
   create(@Body() createCommitteeDto: CreateCommitteeDto) {
     return this.committeeService.create(createCommitteeDto);
   }
@@ -40,12 +42,20 @@ export class CommitteeController {
       committeeFilterableFields,
     ),
   )
-  async findAllPublic(@Req() req: Request) {
+  async findAll(@Req() req: Request) {
     const where = req['where'];
     const pagination = req['pagination'] as JwtPayload;
 
+    const finalWhere = {
+      AND: [
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        ...(where.AND || []),
+        { OR: [{ valid_till: { gt: new Date() } }, { valid_till: null }] },
+      ],
+    };
+
     const result = await this.committeeService.findAll({
-      where,
+      where: finalWhere,
       ...formatPagination(pagination),
     });
     return {
@@ -59,14 +69,14 @@ export class CommitteeController {
   }
 
   @Get('by-admin')
-  @Public()
+  @AllowIf('committee:read')
   @UseInterceptors(
     new SearchFilterAndPaginationInterceptor<'Committee'>(
       committeeSearchableFields,
       committeeFilterableFields,
     ),
   )
-  async findAll(@Req() req: Request) {
+  async findAllByAdmin(@Req() req: Request) {
     const where = req['where'];
     const pagination = req['pagination'] as JwtPayload;
 
@@ -85,6 +95,7 @@ export class CommitteeController {
   }
 
   @Get(':id')
+  @AllowIf('committee:read')
   async findOne(@Param('id', ParseIntPipe) id: string) {
     const isExist = await this.committeeService.findOne({ where: { id: +id } });
     if (!isExist) {
@@ -94,6 +105,7 @@ export class CommitteeController {
   }
 
   @Patch(':id')
+  @AllowIf('committee:update')
   async update(
     @Param('id', ParseIntPipe) id: string,
     @Body() updateCommitteeDto: UpdateCommitteeDto,
@@ -106,6 +118,7 @@ export class CommitteeController {
   }
 
   @Delete(':id')
+  @AllowIf('committee:delete')
   async remove(@Param('id', ParseIntPipe) id: string) {
     const isExist = await this.committeeService.findOne({ where: { id: +id } });
     if (!isExist) {
