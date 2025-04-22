@@ -46,6 +46,7 @@ model Member {
   deleted_at      DateTime?
   access_rule     Member_access_rule @relation("AdministatorToAccessrule", fields: [role], references: [role])
   member_sessions Member_session[]   @relation("SessionToMember")
+  Committee       Committee[]        @relation("CommitteeToMember")
 
   @@index([email])
 }
@@ -73,4 +74,25 @@ model Member_access_rule {
   updated_at DateTime       @updatedAt
   deleted_at DateTime?
   member     Member[]       @relation("AdministatorToAccessrule")
+}
+
+model Committee {
+  id                Int    @id @default(autoincrement())
+  type_of_committee String
+  designation       String
+
+  selected_at DateTime  @default(now())
+  valid_till  DateTime?
+
+  member_id Int
+  member    Member @relation("CommitteeToMember", fields: [member_id], references: [id], onDelete: Cascade)
+
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
+}
+
+enum Committee_type_enum {
+  director
+  executive
 }

@@ -21,11 +21,11 @@ export async function seedService() {
     const password = await bcrypt.hash('Admin123', saltRounds);
     await prisma.member.create({
       data: {
-        full_name: 'Member',
-        email: 'admin@gmail.com',
+        full_name: 'Nurul Islam Rimon',
+        email: 'nurulislamrimon@gmail.com',
         password,
         role: MemberRoleEnum.super_admin,
-        phone_number: '01850711231',
+        phone_number: '01715494846',
       },
     });
 
