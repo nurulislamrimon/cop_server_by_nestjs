@@ -28,12 +28,20 @@ import { AllowIf } from 'src/decorators/AllowIf.decorator';
 export class CommitteeController {
   constructor(private readonly committeeService: CommitteeService) {}
 
+  /**
+   * API: Controller
+   * Message: Create - committee
+   */
   @Post('add')
   @AllowIf('committee:write')
   create(@Body() createCommitteeDto: CreateCommitteeDto) {
     return this.committeeService.create(createCommitteeDto);
   }
 
+  /**
+   * API: Controller
+   * Message: Get All - committee
+   */
   @Get()
   @Public()
   @UseInterceptors(
@@ -75,6 +83,10 @@ export class CommitteeController {
     };
   }
 
+  /**
+   * API: Controller
+   * Message: Get All - committee
+   */
   @Get('by-admin')
   @AllowIf('committee:read')
   @UseInterceptors(
@@ -108,6 +120,10 @@ export class CommitteeController {
     };
   }
 
+  /**
+   * API: Controller
+   * Message: Get One - committee
+   */
   @Get(':id')
   @AllowIf('committee:read')
   async findOne(@Param('id', ParseIntPipe) id: string) {
@@ -118,6 +134,10 @@ export class CommitteeController {
     return isExist;
   }
 
+  /**
+   * API: Controller
+   * Message: Update - committee
+   */
   @Patch(':id')
   @AllowIf('committee:update')
   async update(
@@ -131,6 +151,10 @@ export class CommitteeController {
     return await this.committeeService.updateById(+id, updateCommitteeDto);
   }
 
+  /**
+   * API: Controller
+   * Message: Delete - committee
+   */
   @Delete(':id')
   @AllowIf('committee:delete')
   async remove(@Param('id', ParseIntPipe) id: string) {

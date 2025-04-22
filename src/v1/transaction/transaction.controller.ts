@@ -28,6 +28,10 @@ import { AllowIf } from 'src/decorators/AllowIf.decorator';
 export class TransactionController {
   constructor(private readonly transactionService: TransactionService) {}
 
+  /**
+   * API: Controller
+   * Message: Create - transaction
+   */
   @Post('add')
   @AllowIf('transaction:write')
   create(
@@ -39,6 +43,10 @@ export class TransactionController {
     return this.transactionService.create(createTransactionDto);
   }
 
+  /**
+   * API: Controller
+   * Message: Get All - transaction
+   */
   @Get('by-admin')
   @UseInterceptors(
     new SearchFilterAndPaginationInterceptor<'Transaction'>(
@@ -64,6 +72,10 @@ export class TransactionController {
     };
   }
 
+  /**
+   * API: Controller
+   * Message: Get All - transaction
+   */
   @Get()
   @UseInterceptors(
     new SearchFilterAndPaginationInterceptor<'Transaction'>(
@@ -93,6 +105,10 @@ export class TransactionController {
     };
   }
 
+  /**
+   * API: Controller
+   * Message: Get One - transaction
+   */
   @Get(':id')
   @AllowIf('transaction:read')
   async findOne(@Param('id', ParseIntPipe) id: string) {
@@ -105,6 +121,10 @@ export class TransactionController {
     return isExist;
   }
 
+  /**
+   * API: Controller
+   * Message: Update - transaction
+   */
   @Patch(':id')
   @AllowIf('transaction:update')
   async update(
@@ -120,6 +140,10 @@ export class TransactionController {
     return await this.transactionService.updateById(+id, updateTransactionDto);
   }
 
+  /**
+   * API: Controller
+   * Message: Delete - transaction
+   */
   @Delete(':id')
   @AllowIf('transaction:delete')
   async remove(@Param('id', ParseIntPipe) id: string) {
