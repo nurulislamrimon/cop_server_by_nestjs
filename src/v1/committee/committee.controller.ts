@@ -26,7 +26,7 @@ import { AllowIf } from 'src/decorators/AllowIf.decorator';
 
 @Controller('v1/committee')
 export class CommitteeController {
-  constructor(private readonly committeeService: CommitteeService) {}
+  constructor(private readonly committeeService: CommitteeService) { }
 
   /**
    * API: Controller
@@ -53,12 +53,13 @@ export class CommitteeController {
   async findAll(@Req() req: Request) {
     const where = req['where'];
     const pagination = req['pagination'] as JwtPayload;
+    const { AND, ...rest } = where;
 
     const finalWhere = {
       AND: [
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        ...(where.AND || []),
+        ...(AND || []),
         { OR: [{ valid_till: { gt: new Date() } }, { valid_till: null }] },
+        ...rest
       ],
     };
 

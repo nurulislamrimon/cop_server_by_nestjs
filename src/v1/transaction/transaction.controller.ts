@@ -26,7 +26,7 @@ import { AllowIf } from 'src/decorators/AllowIf.decorator';
 
 @Controller('v1/transaction')
 export class TransactionController {
-  constructor(private readonly transactionService: TransactionService) {}
+  constructor(private readonly transactionService: TransactionService) { }
 
   /**
    * API: Controller
@@ -87,9 +87,10 @@ export class TransactionController {
     const where = req['where'];
     const pagination = req['pagination'] as Record<string, unknown>;
     const user = req['user'] as JwtPayload;
+    const { AND, ...rest } = where;
     const finalWhere = {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      AND: [...(where.AND || []), { member_id: user.id }],
+      AND: [...(AND || []), { member_id: user.id }],
+      ...rest
     };
     const result = await this.transactionService.findAll({
       where: finalWhere,

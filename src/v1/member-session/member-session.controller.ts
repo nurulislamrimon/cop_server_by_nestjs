@@ -21,7 +21,7 @@ import { AllowIf } from 'src/decorators/AllowIf.decorator';
 
 @Controller('v1/member-session')
 export class MemberSessionController {
-  constructor(private readonly memberSessionService: MemberSessionService) {}
+  constructor(private readonly memberSessionService: MemberSessionService) { }
 
   /**
    * API: Controller
@@ -73,10 +73,10 @@ export class MemberSessionController {
     const where = req['where'];
     const pagination = req['pagination'] as Record<string, string | number>;
     const user = req['user'] as JwtPayload;
-
+    const { AND, ...rest } = where
     const finalWhere = {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      AND: [...(where.AND || []), { member_id: user.id }],
+      AND: [...(AND || []), { member_id: user.id }],
+      ...rest
     };
     const result = await this.memberSessionService.findAll({
       where: finalWhere,

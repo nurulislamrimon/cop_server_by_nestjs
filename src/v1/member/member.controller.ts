@@ -202,13 +202,13 @@ export class MemberController {
   async findAll(@Req() req: Request) {
     const where = req['where'];
     const pagination = req['pagination'] as Record<string, string | number>;
-
+    const { AND, ...rest } = where;
     const finalWhere = {
       AND: [
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        ...(where.AND || []),
+        ...(AND || []),
         { is_active: true },
       ],
+      ...rest
     };
 
     const data = await this.memberService.findAll({
