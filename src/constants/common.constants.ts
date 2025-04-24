@@ -30,6 +30,8 @@ export const dateFields: string[] = [
   'created_at',
   'updated_at',
   'deleted_at',
+  'date_of_birth',
+  'joining_date'
 ];
 
 export const booleanFields: string[] = [

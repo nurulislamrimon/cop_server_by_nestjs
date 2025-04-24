@@ -46,5 +46,11 @@ export class CreateMemberDto {
   @IsOptional()
   address?: string;
 
+
+  @IsOptional()
+  @IsDate()
+  @Type(() => Date)
+  joining_date: Date;
+
   [key: string]: any;
 }

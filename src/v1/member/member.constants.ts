@@ -3,6 +3,12 @@ import { Member, Prisma } from '@prisma/client';
 export const memberFilterableFields: (keyof Member)[] = [
   'id',
   'full_name',
+  'father_name',
+  'mother_name',
+  'date_of_birth',
+  'occupation',
+  'reffered_by',
+  'joining_date',
   'phone_number',
   'email',
   'role',
@@ -16,7 +22,11 @@ export const memberFilterableFields: (keyof Member)[] = [
 
 export const memberSearchableFields: (keyof Member)[] = [
   'full_name',
+  'father_name',
+  'mother_name',
   'phone_number',
+  'occupation',
+  'reffered_by',
   'email',
   'address',
 ];
@@ -32,6 +42,12 @@ type MemberSelectedFields = {
 export const memberSelectedFields: MemberSelectedFields = {
   id: true,
   full_name: true,
+  father_name: true,
+  mother_name: true,
+  date_of_birth: true,
+  occupation: true,
+  reffered_by: true,
+  joining_date: true,
   phone_number: true,
   email: true,
   role: true,

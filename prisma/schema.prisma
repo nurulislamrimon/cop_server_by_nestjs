@@ -40,6 +40,7 @@ model Member {
   balance              Int                   @default(0)
   occupation           String                @default("Student")
   reffered_by          String                @default("Nurul Islam Rimon")
+  joining_date         DateTime              @default(now())
   // dates
   created_at           DateTime              @default(now())
   updated_at           DateTime              @updatedAt
