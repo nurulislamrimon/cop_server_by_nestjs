@@ -59,7 +59,7 @@ export class CommitteeController {
       AND: [
         ...(AND || []),
         { OR: [{ valid_till: { gt: new Date() } }, { valid_till: null }] },
-        ...rest
+        ...(rest || {})
       ],
     };
 

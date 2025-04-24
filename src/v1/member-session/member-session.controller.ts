@@ -76,7 +76,7 @@ export class MemberSessionController {
     const { AND, ...rest } = where
     const finalWhere = {
       AND: [...(AND || []), { member_id: user.id }],
-      ...rest
+      ...(rest || {})
     };
     const result = await this.memberSessionService.findAll({
       where: finalWhere,

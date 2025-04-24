@@ -208,7 +208,7 @@ export class MemberController {
         ...(AND || []),
         { is_active: true },
       ],
-      ...rest
+      ...(rest || {})
     };
 
     const data = await this.memberService.findAll({
