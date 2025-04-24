@@ -35,6 +35,7 @@ import { formatPagination } from '../../utils/format.utils';
 import { MailService } from '../../lib/mail/mail.service';
 import { Member, Member_access_rule } from '@prisma/client';
 import { AllowIf } from 'src/decorators/AllowIf.decorator';
+import { omit } from 'src/utils/omit.utils';
 
 @Controller('v1/member')
 export class MemberController {
@@ -43,7 +44,7 @@ export class MemberController {
     private readonly memberSessionService: MemberSessionService,
     private readonly cloudflareService: CloudflareService,
     private readonly mailService: MailService,
-  ) {}
+  ) { }
 
   /**
    * API: Controller
@@ -212,7 +213,7 @@ export class MemberController {
 
     const data = await this.memberService.findAll({
       where: finalWhere,
-      select: memberSelectedFields,
+      select: omit(memberSelectedFields, ["address", "balance"]),
       ...formatPagination(pagination),
     });
 
