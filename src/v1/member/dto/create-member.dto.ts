@@ -1,9 +1,23 @@
-import { Transform } from 'class-transformer';
-import { IsBoolean, IsEmail, IsOptional, IsString } from 'class-validator';
+import { Transform, Type } from 'class-transformer';
+import { IsBoolean, IsDate, IsEmail, IsOptional, IsString } from 'class-validator';
 
 export class CreateMemberDto {
   @IsString()
   full_name: string;
+
+  @IsString()
+  @IsOptional()
+  father_name: string;
+
+  @IsString()
+  @IsOptional()
+  mother_name: string;
+
+
+  @IsOptional()
+  @IsDate()
+  @Type(() => Date)
+  date_of_birth: Date;
 
   @IsString()
   phone_number: string;

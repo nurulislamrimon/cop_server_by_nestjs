@@ -26,6 +26,9 @@ enum AccountStatusEnum {
 model Member {
   id                   Int                   @id @default(autoincrement())
   full_name            String
+  father_name          String?
+  mother_name          String?
+  date_of_birth        DateTime?
   phone_number         String
   email                String                @unique
   password             String
