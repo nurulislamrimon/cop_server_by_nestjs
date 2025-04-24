@@ -253,13 +253,12 @@ export class MemberController {
    * Message: Get One - member
    */
   @Get(':id')
-  @AllowIf('member:read')
+  @Public()
   async findOne(@Param('id', ParseIntPipe) id: string) {
     const isExist = await this.memberService.findUniqueWithPhoto({
       where: { id: +id },
       select: {
-        ...memberSelectedFields,
-        access_rule: { select: { rules: true } },
+        ...omit(memberSelectedFields, ["balance"]),
       },
     });
     return { data: isExist };

@@ -35,6 +35,8 @@ model Member {
   is_active            Boolean               @default(true)
   account_status       AccountStatusEnum     @default(active)
   balance              Int                   @default(0)
+  occupation           String                @default("Student")
+  reffered_by          String                @default("Nurul Islam Rimon")
   // dates
   created_at           DateTime              @default(now())
   updated_at           DateTime              @updatedAt
