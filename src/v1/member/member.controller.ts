@@ -35,7 +35,7 @@ import { formatPagination } from '../../utils/format.utils';
 import { MailService } from '../../lib/mail/mail.service';
 import { Member, Member_access_rule } from '@prisma/client';
 import { AllowIf } from 'src/decorators/AllowIf.decorator';
-import { omit } from 'src/utils/omit.utils';
+import { omit } from '../../utils/omit.utils';
 
 @Controller('v1/member')
 export class MemberController {
