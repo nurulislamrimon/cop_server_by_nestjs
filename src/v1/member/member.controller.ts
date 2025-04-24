@@ -213,7 +213,7 @@ export class MemberController {
 
     const data = await this.memberService.findAll({
       where: finalWhere,
-      select: omit(memberSelectedFields, ["address", "balance"]),
+      select: omit(memberSelectedFields, ["address", "balance", "father_name", "mother_name", "joining_date", "account_status"]),
       ...formatPagination(pagination),
     });
 

@@ -53,6 +53,7 @@ export const memberSelectedFields: MemberSelectedFields = {
   role: true,
   profile_photo: true,
   balance: true,
+  account_status: true,
   //   password:true,
   address: true,
   created_at: true,
