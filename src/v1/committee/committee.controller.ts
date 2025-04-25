@@ -18,11 +18,14 @@ import { SearchFilterAndPaginationInterceptor } from 'src/interceptors/searchFil
 import {
   committeeFilterableFields,
   committeeSearchableFields,
+  committeeSelectedFields,
 } from './committee.constants';
 import { formatPagination } from 'src/utils/format.utils';
 import { JwtPayload } from 'jsonwebtoken';
 import { Public } from 'src/decorators/public.decorator';
 import { AllowIf } from 'src/decorators/AllowIf.decorator';
+import { omit } from 'src/utils/omit.utils';
+import { memberSelectedFields } from '../member/member.constants';
 
 @Controller('v1/committee')
 export class CommitteeController {
@@ -126,9 +129,19 @@ export class CommitteeController {
    * Message: Get One - committee
    */
   @Get(':id')
-  @AllowIf('committee:read')
+  @Public()
   async findOne(@Param('id', ParseIntPipe) id: string) {
-    const isExist = await this.committeeService.findOne({ where: { id: +id } });
+    const isExist = await this.committeeService.findOne({
+      where: { id: +id },
+      select: {
+        ...committeeSelectedFields,
+        member: {
+          select: {
+            ...omit(memberSelectedFields, ["balance"]),
+          }
+        }
+      }
+    });
     if (!isExist) {
       throw new NotFoundException('Committee not found with id #' + id);
     }
