@@ -13,19 +13,23 @@ import {
 } from '../constants/common.constants';
 import { pick } from '../utils/pick.utils';
 import { IModelMappingsForWhere } from '../interfaces/modelMapping.interface';
+import * as qs from 'qs';
+
 
 @Injectable()
 export class SearchFilterAndPaginationInterceptor<
   T extends keyof IModelMappingsForWhere,
-> implements NestInterceptor
-{
+> implements NestInterceptor {
   constructor(
     private readonly searchableFields: Array<keyof IModelMappingsForWhere[T]>,
     private readonly filterableFields: Array<keyof IModelMappingsForWhere[T]>,
-  ) {}
+  ) { }
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const request: Request = context.switchToHttp().getRequest();
+    const originalUrl = request.url;
+    const queryStr = originalUrl.split('?')[1] ?? '';
+    const parsedQuery = qs.parse(queryStr);
     const {
       searchTerm,
       page = 1,
@@ -33,7 +37,7 @@ export class SearchFilterAndPaginationInterceptor<
       sortBy,
       sortOrder,
       ...filterQuery
-    } = request.query;
+    } = parsedQuery;
 
     // Pick filter fields from query
     const filterFields = pick(filterQuery, this.filterableFields.map(String));
