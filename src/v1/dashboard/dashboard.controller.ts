@@ -8,11 +8,29 @@ import { JwtPayload } from 'jsonwebtoken';
 export class DashboardController {
   constructor(private readonly dashboardService: DashboardService) { }
 
+  /**
+  * API: Service
+  * Message: Get - statistics from snapshot and member
+  */
   @Get()
   async getSnapshotData() {
     return await this.dashboardService.getTotalModelsCounted();
   }
 
+  /**
+   * API: Service
+   * Message: Get - last month statistics with differences and member
+   */
+  @Get('/last-month-statistics')
+  async lastMonthStatistics(@Req() req: Request) {
+    const user = req.user as JwtPayload;
+    return await this.dashboardService.lastMonthStatistics(user.id);
+  }
+
+  /**
+   * API: Service
+   * Message: Get - last year statistics with differences and member
+   */
   @Get('/last-year-statistics')
   async lastYearStatistics(@Req() req: Request) {
     const user = req.user as JwtPayload;
