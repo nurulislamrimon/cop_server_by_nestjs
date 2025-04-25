@@ -1,11 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { Committee_type_enum } from '@prisma/client';
 import { PrismaService } from 'src/lib/prisma/prisma.service';
+import { subYears, startOfYear, endOfYear } from 'date-fns';
+
 
 @Injectable()
 export class DashboardService {
-  constructor(private readonly prisma: PrismaService) {}
-  async getAllData() {
+  /**
+   * API: Service
+   * Message: Get - statistics from snapshot and member
+   */
+  constructor(private readonly prisma: PrismaService) { }
+  async getTotalModelsCounted() {
     const valid = {
       OR: [{ valid_till: { gt: new Date() } }, { valid_till: null }],
     };
@@ -24,4 +30,65 @@ export class DashboardService {
     ]);
     return { members, director, committee };
   }
+
+  /**
+   * API: Service
+   * Message: Get - statistics with differences and member
+   */
+  async lastYearStatistics(member_id: number) {
+    const now = new Date();
+
+    const currentStart = startOfYear(now);
+    const currentEnd = endOfYear(now);
+    const previousStart = startOfYear(subYears(now, 1));
+    const previousEnd = endOfYear(subYears(now, 1));
+
+    const getYearlyStats = async (start: Date, end: Date) => {
+      return this.prisma.transaction.groupBy({
+        by: ['trx_type'],
+        _sum: {
+          amount: true,
+        },
+        where: {
+          member_id, // ✅ filter by member_id
+          collected_at: {
+            gte: start,
+            lte: end,
+          },
+          deleted_at: null,
+        },
+      });
+    };
+
+    const [currentStats, previousStats] = await Promise.all([
+      getYearlyStats(currentStart, currentEnd),
+      getYearlyStats(previousStart, previousEnd),
+    ]);
+
+    const toMap = (stats: any[]) =>
+      stats.reduce((acc, cur) => {
+        acc[cur.trx_type] = cur._sum.amount ?? 0;
+        return acc;
+      }, {} as Record<string, number>);
+
+    const currentMap = toMap(currentStats);
+    const previousMap = toMap(previousStats);
+
+    const allTypes = new Set([
+      ...Object.keys(currentMap),
+      ...Object.keys(previousMap),
+    ]);
+
+    const differenceMap: Record<string, number> = {};
+    allTypes.forEach((type) => {
+      differenceMap[type] = (currentMap[type] ?? 0) - (previousMap[type] ?? 0);
+    });
+
+    return {
+      currentYear: currentMap,
+      previousYear: previousMap,
+      difference: differenceMap,
+    };
+  }
+
 }
