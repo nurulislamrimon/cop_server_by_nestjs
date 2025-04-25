@@ -84,15 +84,22 @@ export class DashboardService {
 
     const differenceMap: Record<string, number> = {};
     allTypes.forEach((type) => {
-      differenceMap[type] = (currentMap[type] ?? 0) - (previousMap[type] ?? 0);
+      const current = currentMap[type] ?? 0;
+      const previous = previousMap[type] ?? 0;
+      if (previous === 0) {
+        differenceMap[type] = current === 0 ? 0 : 100;
+      } else {
+        differenceMap[type] = ((current - previous) / previous) * 100;
+      }
     });
 
     return {
       currentMonth: currentMap,
       previousMonth: previousMap,
-      difference: differenceMap,
+      differencePercentage: differenceMap,
     };
   }
+
 
   /**
  * API: Service
@@ -113,7 +120,7 @@ export class DashboardService {
           amount: true,
         },
         where: {
-          member_id, // ✅ filter by member_id
+          member_id,
           collected_at: {
             gte: start,
             lte: end,
@@ -144,14 +151,21 @@ export class DashboardService {
 
     const differenceMap: Record<string, number> = {};
     allTypes.forEach((type) => {
-      differenceMap[type] = (currentMap[type] ?? 0) - (previousMap[type] ?? 0);
+      const current = currentMap[type] ?? 0;
+      const previous = previousMap[type] ?? 0;
+      if (previous === 0) {
+        differenceMap[type] = current === 0 ? 0 : 100;
+      } else {
+        differenceMap[type] = ((current - previous) / previous) * 100;
+      }
     });
 
     return {
       currentYear: currentMap,
       previousYear: previousMap,
-      difference: differenceMap,
+      differencePercentage: differenceMap,
     };
   }
+
 
 }
