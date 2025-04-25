@@ -27,6 +27,7 @@ export const numberFields: string[] = [
 export const dateFields: string[] = [
   'selected_at',
   'valid_till',
+  'collected_at',
   'created_at',
   'updated_at',
   'deleted_at',

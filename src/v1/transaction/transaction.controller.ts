@@ -94,6 +94,13 @@ export class TransactionController {
     };
     const result = await this.transactionService.findAll({
       where: finalWhere,
+      include: {
+        member: {
+          select: {
+            full_name: true
+          }
+        }
+      },
       ...formatPagination(pagination),
     });
     return {
