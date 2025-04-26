@@ -44,7 +44,7 @@ export class MemberController {
     private readonly memberSessionService: MemberSessionService,
     private readonly cloudflareService: CloudflareService,
     private readonly mailService: MailService,
-  ) { }
+  ) {}
 
   /**
    * API: Controller
@@ -204,16 +204,21 @@ export class MemberController {
     const pagination = req['pagination'] as Record<string, string | number>;
     const { AND, ...rest } = where;
     const finalWhere = {
-      AND: [
-        ...(AND || []),
-        { is_active: true },
-      ],
-      ...(rest || {})
+      AND: [...(AND || []), { is_active: true }],
+      ...(rest || {}),
     };
 
     const data = await this.memberService.findAll({
       where: finalWhere,
-      select: omit(memberSelectedFields, ["address", "balance", "father_name", "mother_name", "account_status", "profile_photo", "reffered_by"]),
+      select: omit(memberSelectedFields, [
+        'address',
+        'balance',
+        'father_name',
+        'mother_name',
+        'account_status',
+        'profile_photo',
+        'reffered_by',
+      ]),
       ...formatPagination(pagination),
     });
 
@@ -258,7 +263,7 @@ export class MemberController {
     const isExist = await this.memberService.findUniqueWithPhoto({
       where: { id: +id },
       select: {
-        ...omit(memberSelectedFields, ["balance"]),
+        ...omit(memberSelectedFields, ['balance']),
       },
     });
     return { data: isExist };

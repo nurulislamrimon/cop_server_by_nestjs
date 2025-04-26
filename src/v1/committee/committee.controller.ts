@@ -29,7 +29,7 @@ import { memberSelectedFields } from '../member/member.constants';
 
 @Controller('v1/committee')
 export class CommitteeController {
-  constructor(private readonly committeeService: CommitteeService) { }
+  constructor(private readonly committeeService: CommitteeService) {}
 
   /**
    * API: Controller
@@ -63,7 +63,7 @@ export class CommitteeController {
         ...(AND || []),
         { OR: [{ valid_till: { gt: new Date() } }, { valid_till: null }] },
       ],
-      ...(rest || {})
+      ...(rest || {}),
     };
 
     const result = await this.committeeService.findAll({
@@ -137,10 +137,10 @@ export class CommitteeController {
         ...committeeSelectedFields,
         member: {
           select: {
-            ...omit(memberSelectedFields, ["balance"]),
-          }
-        }
-      }
+            ...omit(memberSelectedFields, ['balance']),
+          },
+        },
+      },
     });
     if (!isExist) {
       throw new NotFoundException('Committee not found with id #' + id);

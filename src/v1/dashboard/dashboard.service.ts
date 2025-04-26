@@ -1,13 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { Committee_type_enum } from '@prisma/client';
 import { PrismaService } from 'src/lib/prisma/prisma.service';
-import { subYears, startOfYear, endOfYear, startOfMonth, endOfMonth, subMonths } from 'date-fns';
-
+import {
+  subYears,
+  startOfYear,
+  endOfYear,
+  startOfMonth,
+  endOfMonth,
+  subMonths,
+} from 'date-fns';
 
 @Injectable()
 export class DashboardService {
-
-  constructor(private readonly prisma: PrismaService) { }
+  constructor(private readonly prisma: PrismaService) {}
 
   /**
    * API: Service
@@ -33,11 +38,10 @@ export class DashboardService {
     return { members, director, committee };
   }
 
-
   /**
-    * API: Service
-    * Message: Get - last month statistics with differences and member
-    */
+   * API: Service
+   * Message: Get - last month statistics with differences and member
+   */
   async lastMonthStatistics(member_id: number) {
     const now = new Date();
 
@@ -69,10 +73,13 @@ export class DashboardService {
     ]);
 
     const toMap = (stats: any[]) =>
-      stats.reduce((acc, cur) => {
-        acc[cur.trx_type] = cur._sum.amount ?? 0;
-        return acc;
-      }, {} as Record<string, number>);
+      stats.reduce(
+        (acc, cur) => {
+          acc[cur.trx_type] = cur._sum.amount ?? 0;
+          return acc;
+        },
+        {} as Record<string, number>,
+      );
 
     const currentMap = toMap(currentStats);
     const previousMap = toMap(previousStats);
@@ -100,11 +107,10 @@ export class DashboardService {
     };
   }
 
-
   /**
- * API: Service
- * Message: Get - last year statistics with differences and member
- */
+   * API: Service
+   * Message: Get - last year statistics with differences and member
+   */
   async lastYearStatistics(member_id: number) {
     const now = new Date();
 
@@ -136,10 +142,13 @@ export class DashboardService {
     ]);
 
     const toMap = (stats: any[]) =>
-      stats.reduce((acc, cur) => {
-        acc[cur.trx_type] = cur._sum.amount ?? 0;
-        return acc;
-      }, {} as Record<string, number>);
+      stats.reduce(
+        (acc, cur) => {
+          acc[cur.trx_type] = cur._sum.amount ?? 0;
+          return acc;
+        },
+        {} as Record<string, number>,
+      );
 
     const currentMap = toMap(currentStats);
     const previousMap = toMap(previousStats);
@@ -166,6 +175,4 @@ export class DashboardService {
       differencePercentage: differenceMap,
     };
   }
-
-
 }
