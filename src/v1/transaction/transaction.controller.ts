@@ -26,7 +26,7 @@ import { AllowIf } from 'src/decorators/AllowIf.decorator';
 
 @Controller('v1/transaction')
 export class TransactionController {
-  constructor(private readonly transactionService: TransactionService) { }
+  constructor(private readonly transactionService: TransactionService) {}
 
   /**
    * API: Controller
@@ -90,16 +90,16 @@ export class TransactionController {
     const { AND, ...rest } = where;
     const finalWhere = {
       AND: [...(AND || []), { member_id: user.id }],
-      ...(rest || {})
+      ...(rest || {}),
     };
     const result = await this.transactionService.findAll({
       where: finalWhere,
       include: {
         member: {
           select: {
-            full_name: true
-          }
-        }
+            full_name: true,
+          },
+        },
       },
       ...formatPagination(pagination),
     });

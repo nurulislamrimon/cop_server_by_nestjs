@@ -15,15 +15,15 @@ import { pick } from '../utils/pick.utils';
 import { IModelMappingsForWhere } from '../interfaces/modelMapping.interface';
 import * as qs from 'qs';
 
-
 @Injectable()
 export class SearchFilterAndPaginationInterceptor<
   T extends keyof IModelMappingsForWhere,
-> implements NestInterceptor {
+> implements NestInterceptor
+{
   constructor(
     private readonly searchableFields: Array<keyof IModelMappingsForWhere[T]>,
     private readonly filterableFields: Array<keyof IModelMappingsForWhere[T]>,
-  ) { }
+  ) {}
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const request: Request = context.switchToHttp().getRequest();

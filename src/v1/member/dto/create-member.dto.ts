@@ -1,5 +1,11 @@
 import { Transform, Type } from 'class-transformer';
-import { IsBoolean, IsDate, IsEmail, IsOptional, IsString } from 'class-validator';
+import {
+  IsBoolean,
+  IsDate,
+  IsEmail,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class CreateMemberDto {
   @IsString()
@@ -12,7 +18,6 @@ export class CreateMemberDto {
   @IsString()
   @IsOptional()
   mother_name: string;
-
 
   @IsOptional()
   @IsDate()
@@ -45,7 +50,6 @@ export class CreateMemberDto {
   @IsString()
   @IsOptional()
   address?: string;
-
 
   @IsOptional()
   @IsDate()

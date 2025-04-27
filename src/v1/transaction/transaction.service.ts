@@ -6,10 +6,9 @@ import { Prisma, PrismaClient, Transaction_type_enum } from '@prisma/client';
 import { trxFieldsMap } from './transaction.constants';
 import { DefaultArgs } from '@prisma/client/runtime/library';
 
-
 @Injectable()
 export class TransactionService {
-  constructor(private readonly prisma: PrismaService) { }
+  constructor(private readonly prisma: PrismaService) {}
 
   /**
    * API: Service
@@ -44,7 +43,6 @@ export class TransactionService {
       total,
     };
   }
-
 
   /**
    * API: Service
@@ -155,5 +153,4 @@ export class TransactionService {
       data: { balance: { increment: delta * sign * amount } },
     });
   }
-
 }
