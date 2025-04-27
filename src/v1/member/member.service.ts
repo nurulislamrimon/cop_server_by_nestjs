@@ -20,7 +20,7 @@ export class MemberService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly cloudflareService: CloudflareService,
-  ) {}
+  ) { }
 
   /**
    * API: Service
@@ -149,7 +149,7 @@ export class MemberService {
       );
     }
 
-    if (updateMemberDto.email) {
+    if (updateMemberDto.email && updateMemberDto.email !== isExist.email) {
       const isAlreadyExist = await this.findOne({
         where: { email: updateMemberDto.email },
       });
