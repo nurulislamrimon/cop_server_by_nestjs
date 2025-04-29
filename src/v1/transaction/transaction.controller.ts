@@ -26,7 +26,7 @@ import { AllowIf } from 'src/decorators/AllowIf.decorator';
 
 @Controller('v1/transaction')
 export class TransactionController {
-  constructor(private readonly transactionService: TransactionService) {}
+  constructor(private readonly transactionService: TransactionService) { }
 
   /**
    * API: Controller
@@ -60,6 +60,13 @@ export class TransactionController {
     const pagination = req['pagination'] as Record<string, unknown>;
     const result = await this.transactionService.findAll({
       where,
+      include: {
+        member: {
+          select: {
+            full_name: true
+          }
+        }
+      },
       ...formatPagination(pagination),
     });
     return {
