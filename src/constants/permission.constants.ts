@@ -4,6 +4,9 @@ export const memberPermissionResources = [
   'member_session',
   'committee',
   'transaction',
+
+  // client side
+  'manage'
 ] as const;
 
 export const permissionActions = [
