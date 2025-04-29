@@ -77,6 +77,7 @@ export class MemberController {
     if (isExist) {
       throw new ConflictException('Member already exist');
     }
+    createMemberDto.id = Number(createMemberDto.id)
     const data = await this.memberService.create(createMemberDto);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...rest } = data;
