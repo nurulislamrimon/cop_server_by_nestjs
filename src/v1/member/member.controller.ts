@@ -44,7 +44,7 @@ export class MemberController {
     private readonly memberSessionService: MemberSessionService,
     private readonly cloudflareService: CloudflareService,
     private readonly mailService: MailService,
-  ) {}
+  ) { }
 
   /**
    * API: Controller
@@ -186,6 +186,29 @@ export class MemberController {
       data: data.members,
     };
   }
+
+
+  /**
+   * API: Controller
+   * Message: Get last member id - member
+   */
+  @Get('last-member-id')
+  @AllowIf('member:read')
+  async findLastMemberId(@Req() req: Request) {
+    const lastMember = await this.memberService.findOne({
+      orderBy: { id: 'desc' },
+      select: {
+        id: true
+      }
+    });
+
+
+    return {
+      message: 'Member retrieved successfully',
+      data: lastMember,
+    };
+  }
+
 
   /**
    * API: Controller
