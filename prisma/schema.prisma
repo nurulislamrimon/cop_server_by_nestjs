@@ -24,7 +24,7 @@ enum AccountStatusEnum {
 
 // while creating a new model make sure added the model to the IModelMapping else filter and search will not work
 model Member {
-  id                   Int                   @id @default(autoincrement())
+  id                   Int                   @id
   full_name            String
   father_name          String?
   mother_name          String?

@@ -3,11 +3,16 @@ import {
   IsBoolean,
   IsDate,
   IsEmail,
+  IsInt,
   IsOptional,
   IsString,
 } from 'class-validator';
 
 export class CreateMemberDto {
+
+  @IsInt()
+  id: number;
+
   @IsString()
   full_name: string;
 
