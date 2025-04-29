@@ -8,7 +8,7 @@ import { DefaultArgs } from '@prisma/client/runtime/library';
 
 @Injectable()
 export class TransactionService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) { }
 
   /**
    * API: Service
@@ -41,6 +41,49 @@ export class TransactionService {
     return {
       data,
       total,
+    };
+  }
+
+
+  /**
+   * API: Service
+   * Message: Get All - transaction snapshot
+   */
+  async findAllSnapshot(query: Prisma.Transaction_snapshotFindManyArgs) {
+    const data = await this.prisma.transaction_snapshot.findMany(query);
+    const total = await this.prisma.transaction_snapshot.count({ where: query.where });
+
+    // Add individual balances and accumulate totals
+    let grandTotal = {
+      total_deposit_amount: 0,
+      total_withdraw_amount: 0,
+      total_expense_amount: 0,
+      total_balance: 0,
+    };
+
+    const enrichedData = data.map((item) => {
+      const balance =
+        item.total_deposit_amount -
+        item.total_withdraw_amount -
+        item.total_expense_amount;
+
+      grandTotal.total_deposit_amount += item.total_deposit_amount;
+      grandTotal.total_withdraw_amount += item.total_withdraw_amount;
+      grandTotal.total_expense_amount += item.total_expense_amount;
+      grandTotal.total_balance += balance;
+
+      return {
+        ...item,
+        balance,
+      };
+    });
+
+    return {
+      data: enrichedData,
+      grandTotal,
+      meta: {
+        total,
+      },
     };
   }
 

@@ -6,4 +6,5 @@ export interface IModelMappingsForWhere {
   Member_access_rule: Prisma.Member_access_ruleWhereInput;
   Committee: Prisma.CommitteeWhereInput;
   Transaction: Prisma.TransactionWhereInput;
+  Transaction_snapshot: Prisma.Transaction_snapshotWhereInput;
 }
