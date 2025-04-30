@@ -236,7 +236,6 @@ export class MemberController {
       where: finalWhere,
       select: omit(memberSelectedFields, [
         'address',
-        'balance',
         'father_name',
         'mother_name',
         'account_status',
@@ -287,7 +286,7 @@ export class MemberController {
     const isExist = await this.memberService.findUniqueWithPhoto({
       where: { id: +id },
       select: {
-        ...omit(memberSelectedFields, ['balance']),
+        ...memberSelectedFields,
       },
     });
     return { data: isExist };

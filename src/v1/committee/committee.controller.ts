@@ -29,7 +29,7 @@ import { memberSelectedFields } from '../member/member.constants';
 
 @Controller('v1/committee')
 export class CommitteeController {
-  constructor(private readonly committeeService: CommitteeService) {}
+  constructor(private readonly committeeService: CommitteeService) { }
 
   /**
    * API: Controller
@@ -137,7 +137,7 @@ export class CommitteeController {
         ...committeeSelectedFields,
         member: {
           select: {
-            ...omit(memberSelectedFields, ['balance']),
+            ...memberSelectedFields,
           },
         },
       },

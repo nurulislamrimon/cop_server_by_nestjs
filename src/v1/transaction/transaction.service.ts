@@ -56,7 +56,7 @@ export class TransactionService {
       total_expense_amount: 0,
       total_profit_amount: 0,
       total_loss_amount: 0,
-      total_invest_amount: 0,
+      total_investment_amount: 0,
       total_balance: 0,
     };
 
@@ -67,7 +67,7 @@ export class TransactionService {
         item.total_withdraw_amount -
         item.total_expense_amount -
         item.total_loss_amount -
-        item.total_invest_amount;
+        item.total_investment_amount;
 
       // Accumulate totals
       grandTotal.total_deposit_amount += item.total_deposit_amount;
@@ -75,7 +75,7 @@ export class TransactionService {
       grandTotal.total_expense_amount += item.total_expense_amount;
       grandTotal.total_profit_amount += item.total_profit_amount;
       grandTotal.total_loss_amount += item.total_loss_amount;
-      grandTotal.total_invest_amount += item.total_invest_amount;
+      grandTotal.total_investment_amount += item.total_investment_amount;
       grandTotal.total_balance += balance;
 
       return {
@@ -196,11 +196,6 @@ export class TransactionService {
         [count]: { increment: delta },
         [amt]: { increment: delta * amount },
       },
-    });
-
-    await trx.member.update({
-      where: { id: member_id },
-      data: { balance: { increment: delta * sign * amount } },
     });
   }
 }
