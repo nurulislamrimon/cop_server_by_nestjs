@@ -175,7 +175,7 @@ export class TransactionService {
       grandTotal.total_balance += member.balance;
 
       return member;
-    });
+    }).sort((a, b) => b.balance - a.balance);
 
     return {
       data,

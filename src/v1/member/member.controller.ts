@@ -271,7 +271,6 @@ export class MemberController {
         access_rule: { select: { rules: true } },
       },
     });
-
     return { data: isExist };
   }
 
