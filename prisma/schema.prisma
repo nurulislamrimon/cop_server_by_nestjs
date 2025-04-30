@@ -24,34 +24,33 @@ enum AccountStatusEnum {
 
 // while creating a new model make sure added the model to the IModelMapping else filter and search will not work
 model Member {
-  id                   Int                   @id
-  full_name            String
-  father_name          String?
-  mother_name          String?
-  date_of_birth        DateTime?
-  phone_number         String
-  email                String                @unique
-  password             String
-  role                 String?
-  profile_photo        String?
-  address              String?
-  is_active            Boolean               @default(true)
-  account_status       AccountStatusEnum     @default(active)
-  occupation           String                @default("Student")
-  reffered_by          String                @default("Nurul Islam Rimon")
-  joining_date         DateTime              @default(now())
+  id              Int                 @id
+  full_name       String
+  father_name     String?
+  mother_name     String?
+  date_of_birth   DateTime?
+  phone_number    String
+  email           String              @unique
+  password        String
+  role            String?
+  profile_photo   String?
+  address         String?
+  is_active       Boolean             @default(true)
+  account_status  AccountStatusEnum   @default(active)
+  occupation      String              @default("Student")
+  reffered_by     String              @default("Nurul Islam Rimon")
+  joining_date    DateTime            @default(now())
   // dates
-  created_at           DateTime              @default(now())
-  updated_at           DateTime              @updatedAt
-  deleted_at           DateTime?
-  access_rule          Member_access_rule?   @relation("AdministatorToAccessrule", fields: [role], references: [role])
-  member_sessions      Member_session[]      @relation("SessionToMember")
-  committee            Committee[]           @relation("CommitteeToMember")
-  transaction          Transaction[]         @relation("TransactionToMember")
-  collected            Transaction[]         @relation("CollectorToMember")
-  trx_approved         Transaction[]         @relation("ApproverToMember")
-  created_trx          Transaction[]         @relation("CreatedByToMember")
-  transaction_snapshot Transaction_snapshot? @relation("TrxSnapshotToMember")
+  created_at      DateTime            @default(now())
+  updated_at      DateTime            @updatedAt
+  deleted_at      DateTime?
+  access_rule     Member_access_rule? @relation("AdministatorToAccessrule", fields: [role], references: [role])
+  member_sessions Member_session[]    @relation("SessionToMember")
+  committee       Committee[]         @relation("CommitteeToMember")
+  transaction     Transaction[]       @relation("TransactionToMember")
+  collected       Transaction[]       @relation("CollectorToMember")
+  trx_approved    Transaction[]       @relation("ApproverToMember")
+  created_trx     Transaction[]       @relation("CreatedByToMember")
 
   @@index([email])
 }
@@ -128,24 +127,4 @@ enum Transaction_type_enum {
   Loss
   Expense
   Investment
-}
-
-model Transaction_snapshot {
-  id                      Int     @id @default(autoincrement())
-  // number
-  total_deposit           Int     @default(0)
-  total_withdraw          Int     @default(0)
-  total_expense           Int     @default(0)
-  total_profit            Int     @default(0)
-  total_loss              Int     @default(0)
-  total_investment        Int     @default(0)
-  // amounts
-  total_deposit_amount    Int     @default(0)
-  total_withdraw_amount   Int     @default(0)
-  total_expense_amount    Int     @default(0)
-  total_profit_amount     Int     @default(0)
-  total_loss_amount       Int     @default(0)
-  total_investment_amount Int     @default(0)
-  member_id               Int     @unique
-  member                  Member? @relation("TrxSnapshotToMember", fields: [member_id], references: [id], onDelete: Cascade)
 }

@@ -264,11 +264,10 @@ export class MemberController {
   async findMe(@Req() req: Request) {
     const user = req['user'] as Record<string, any>;
     const id = user?.id;
-    const isExist = await this.memberService.findUniqueWithPhoto({
+    const isExist = await this.memberService.findUniqueWithPhotoAndTrxSnapshot({
       where: { id: +id },
       select: {
         ...memberSelectedFields,
-        transaction_snapshot: true,
         access_rule: { select: { rules: true } },
       },
     });

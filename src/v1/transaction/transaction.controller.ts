@@ -85,35 +85,20 @@ export class TransactionController {
  */
   @Get('snapshot/by-admin')
   @UseInterceptors(
-    new SearchFilterAndPaginationInterceptor<'Transaction_snapshot'>(
-      [],
-      ['member_id']
+    new SearchFilterAndPaginationInterceptor<'Transaction'>(
+      transactionSearchableFields,
+      transactionFilterableFields
     ),
   )
   @AllowIf('transaction:read')
   async findAllSnapshotByAdmin(@Req() req: Request) {
     const where = req['where'];
-    const pagination = req['pagination'] as Record<string, unknown>;
-    pagination.sortBy = (pagination.sortBy === 'created_at') && 'id';
 
     const result = await this.transactionService.findAllSnapshot({
       where,
-      include: {
-        member: {
-          select: {
-            full_name: true
-          }
-        }
-      },
-      ...formatPagination(pagination),
     });
     return {
       data: { individuals: result.data, grandTotal: result.grandTotal },
-      meta: {
-        total: result?.meta?.total,
-        page: Number(pagination.page),
-        limit: Number(pagination.limit),
-      },
     };
   }
 

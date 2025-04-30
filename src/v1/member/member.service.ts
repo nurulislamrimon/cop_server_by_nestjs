@@ -14,11 +14,13 @@ import * as jwt from 'jsonwebtoken';
 import { CloudflareService } from '../../lib/cloudflare/cloudflare.service';
 import { PrismaService } from '../../lib/prisma/prisma.service';
 import { saltRounds } from '../../constants/common.constants';
+import { TransactionService } from '../transaction/transaction.service';
 
 @Injectable()
 export class MemberService {
   constructor(
     private readonly prisma: PrismaService,
+    private readonly transactionService: TransactionService,
     private readonly cloudflareService: CloudflareService,
   ) { }
 
@@ -131,6 +133,26 @@ export class MemberService {
       );
     }
     return { ...isExist, profile_photo_url };
+  }
+
+  /**
+   * API: Service
+   * Message: Get Unique - member
+   */
+  async findUniqueWithPhotoAndTrxSnapshot(query: Prisma.MemberFindUniqueArgs) {
+    const isExist = await this.prisma.member.findUnique(query);
+    if (!isExist) {
+      throw new NotFoundException('Member not found!');
+    }
+
+    let profile_photo_url: string | undefined;
+    if (isExist.profile_photo) {
+      profile_photo_url = await this.cloudflareService.getDownloadUrl(
+        isExist.profile_photo,
+      );
+    }
+    const transaction_snapshot = this.transactionService.findAMemberSnapshot(isExist.id)
+    return { ...isExist, profile_photo_url, transaction_snapshot };
   }
 
   /**
