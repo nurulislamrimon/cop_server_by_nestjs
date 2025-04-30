@@ -126,7 +126,7 @@ enum Transaction_type_enum {
   Deposit
   Withdraw
   Profit
-  Lose
+  Loss
   Expense
   Investment
 }
@@ -138,14 +138,14 @@ model Transaction_snapshot {
   total_withdraw        Int     @default(0)
   total_expense         Int     @default(0)
   total_profit          Int     @default(0)
-  total_lose            Int     @default(0)
+  total_loss            Int     @default(0)
   total_invest          Int     @default(0)
   // amounts
   total_deposit_amount  Int     @default(0)
   total_withdraw_amount Int     @default(0)
   total_expense_amount  Int     @default(0)
   total_profit_amount   Int     @default(0)
-  total_lose_amount     Int     @default(0)
+  total_loss_amount     Int     @default(0)
   total_invest_amount   Int     @default(0)
   member_id             Int     @unique
   member                Member? @relation("TrxSnapshotToMember", fields: [member_id], references: [id], onDelete: Cascade)

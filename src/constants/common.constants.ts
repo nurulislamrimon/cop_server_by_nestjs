@@ -14,13 +14,13 @@ export const numberFields: string[] = [
   'total_withdraw',
   'total_expense',
   'total_profit',
-  'total_lose',
+  'total_loss',
   'total_invest',
   'total_deposit_amount',
   'total_withdraw_amount',
   'total_expense_amount',
   'total_profit_amount',
-  'total_lose_amount',
+  'total_loss_amount',
   'total_invest_amount',
 ];
 
