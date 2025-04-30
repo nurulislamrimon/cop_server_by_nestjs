@@ -45,10 +45,6 @@ export class TransactionService {
   }
 
 
-  /**
-   * API: Service
-   * Message: Get All - transaction snapshot
-   */
   async findAllSnapshot(query: Prisma.Transaction_snapshotFindManyArgs) {
     const data = await this.prisma.transaction_snapshot.findMany(query);
     const total = await this.prisma.transaction_snapshot.count({ where: query.where });
@@ -58,18 +54,28 @@ export class TransactionService {
       total_deposit_amount: 0,
       total_withdraw_amount: 0,
       total_expense_amount: 0,
+      total_profit_amount: 0,
+      total_loss_amount: 0,
+      total_invest_amount: 0,
       total_balance: 0,
     };
 
     const enrichedData = data.map((item) => {
       const balance =
-        item.total_deposit_amount -
+        item.total_deposit_amount +
+        item.total_profit_amount -
         item.total_withdraw_amount -
-        item.total_expense_amount;
+        item.total_expense_amount -
+        item.total_loss_amount -
+        item.total_invest_amount;
 
+      // Accumulate totals
       grandTotal.total_deposit_amount += item.total_deposit_amount;
       grandTotal.total_withdraw_amount += item.total_withdraw_amount;
       grandTotal.total_expense_amount += item.total_expense_amount;
+      grandTotal.total_profit_amount += item.total_profit_amount;
+      grandTotal.total_loss_amount += item.total_loss_amount;
+      grandTotal.total_invest_amount += item.total_invest_amount;
       grandTotal.total_balance += balance;
 
       return {
@@ -86,6 +92,7 @@ export class TransactionService {
       },
     };
   }
+
 
   /**
    * API: Service
