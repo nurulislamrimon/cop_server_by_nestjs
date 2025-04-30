@@ -42,7 +42,7 @@ model Member {
   joining_date    DateTime            @default(now())
   // dates
   created_at      DateTime            @default(now())
-  updated_at      DateTime            @updatedAt
+  updated_at      DateTime?           @updatedAt
   deleted_at      DateTime?
   access_rule     Member_access_rule? @relation("AdministatorToAccessrule", fields: [role], references: [role])
   member_sessions Member_session[]    @relation("SessionToMember")
@@ -64,7 +64,7 @@ model Member_session {
   browser    String
   // dates
   created_at DateTime  @default(now())
-  updated_at DateTime  @updatedAt
+  updated_at DateTime? @updatedAt
   deleted_at DateTime?
   member_id  Int
   member     Member?   @relation("SessionToMember", fields: [member_id], references: [id], onDelete: Cascade)
@@ -75,7 +75,7 @@ model Member_access_rule {
   role       String    @unique
   rules      Json
   created_at DateTime  @default(now())
-  updated_at DateTime  @updatedAt
+  updated_at DateTime? @updatedAt
   deleted_at DateTime?
   member     Member[]  @relation("AdministatorToAccessrule")
 }
@@ -89,7 +89,7 @@ model Committee {
   selected_at       DateTime            @default(now())
   valid_till        DateTime?
   created_at        DateTime            @default(now())
-  updated_at        DateTime            @updatedAt
+  updated_at        DateTime?           @updatedAt
   deleted_at        DateTime?
   member            Member?             @relation("CommitteeToMember", fields: [member_id], references: [id], onDelete: Cascade)
 
@@ -112,7 +112,7 @@ model Transaction {
   approver_id   Int?
   collected_at  DateTime              @default(now())
   created_at    DateTime              @default(now())
-  updated_at    DateTime              @updatedAt
+  updated_at    DateTime?             @updatedAt
   deleted_at    DateTime?
   member        Member?               @relation("TransactionToMember", fields: [member_id], references: [id], onDelete: Cascade)
   created_by    Member?               @relation("CreatedByToMember", fields: [created_by_id], references: [id], onDelete: SetNull)
