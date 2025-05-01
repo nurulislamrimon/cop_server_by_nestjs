@@ -24,6 +24,7 @@ memberFilterableFields
   );
 
 export const transactionSearchableFields: (keyof Transaction)[] = [
+  'member_id',
   'note',
 ] as unknown as (keyof Transaction)[];
 

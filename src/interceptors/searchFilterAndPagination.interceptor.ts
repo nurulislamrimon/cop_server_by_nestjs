@@ -47,13 +47,13 @@ export class SearchFilterAndPaginationInterceptor<
     const where: any = {};
     // --- SEARCH TERM LOGIC ---
     if (typeof searchTerm === 'string') {
-      function removeNumberFields(
-        arr1: (keyof IModelMappingsForWhere[T])[],
-        arr2: string[],
+      function filterFieldsByType(
+        arr: (keyof IModelMappingsForWhere[T])[],
+        exclude: string[],
       ) {
-        return arr1.filter((item) => {
-          return typeof item === 'string' && !arr2.includes(item);
-        });
+        return arr.filter(
+          (item) => typeof item === 'string' && !exclude.includes(item),
+        );
       }
 
       function buildNestedSearch(
@@ -62,22 +62,23 @@ export class SearchFilterAndPaginationInterceptor<
       ): Record<string, any> {
         const keys = field.split('.');
         const lastKey = keys.pop()!;
-        const initial: Record<string, any> = {
-          [lastKey]: {
-            contains: searchTerm,
-          },
-        };
+        const value: any =
+          numberFields.includes(lastKey) && !isNaN(Number(searchTerm))
+            ? { equals: Number(searchTerm) }
+            : { contains: searchTerm, mode: 'insensitive' };
+
+        const initial: Record<string, any> = { [lastKey]: value };
+
         const nested = keys.reduceRight<Record<string, any>>(
           (acc, key) => ({ [key]: acc }),
           initial,
         );
+
         return nested;
       }
+      const searchable = filterFieldsByType(this.searchableFields, dateFields);
 
-      where.OR = removeNumberFields(this.searchableFields, [
-        ...numberFields,
-        ...dateFields,
-      ]).map((field) =>
+      where.OR = searchable.map((field) =>
         typeof field === 'string' ? buildNestedSearch(field, searchTerm) : {},
       );
     }
