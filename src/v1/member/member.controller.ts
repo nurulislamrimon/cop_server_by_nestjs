@@ -194,7 +194,7 @@ export class MemberController {
    */
   @Get('last-member-id')
   @AllowIf('member:read')
-  async findLastMemberId(@Req() req: Request) {
+  async findLastMemberId() {
     const lastMember = await this.memberService.findOne({
       orderBy: { id: 'desc' },
       select: {
