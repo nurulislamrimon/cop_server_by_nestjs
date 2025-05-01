@@ -1,4 +1,4 @@
-import { Transaction, Prisma } from '@prisma/client';
+import { Transaction, Prisma, Member } from '@prisma/client';
 import { memberFilterableFields } from '../member/member.constants';
 
 export const transactionFilterableFields: (keyof Transaction)[] = [
@@ -23,7 +23,15 @@ memberFilterableFields
     transactionFilterableFields.push(member),
   );
 
-export const transactionSearchableFields: (keyof Transaction)[] = ['note'];
+export const transactionSearchableFields: (keyof Transaction)[] = [
+  'note',
+] as unknown as (keyof Transaction)[];
+
+(['full_name'] as (keyof Member)[])
+  .map((member) => `member.${member}`)
+  .forEach((member: keyof Transaction) =>
+    transactionSearchableFields.push(member),
+  );
 
 // ------------------------------------
 // select fields

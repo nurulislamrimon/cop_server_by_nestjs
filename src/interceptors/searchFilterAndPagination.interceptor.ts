@@ -45,7 +45,6 @@ export class SearchFilterAndPaginationInterceptor<
     const filterFields = pick(filterQuery, this.filterableFields.map(String));
 
     const where: any = {};
-
     // --- SEARCH TERM LOGIC ---
     if (typeof searchTerm === 'string') {
       function removeNumberFields(
@@ -57,14 +56,30 @@ export class SearchFilterAndPaginationInterceptor<
         });
       }
 
+      function buildNestedSearch(
+        field: string,
+        searchTerm: string,
+      ): Record<string, any> {
+        const keys = field.split('.');
+        const lastKey = keys.pop()!;
+        const initial: Record<string, any> = {
+          [lastKey]: {
+            contains: searchTerm,
+          },
+        };
+        const nested = keys.reduceRight<Record<string, any>>(
+          (acc, key) => ({ [key]: acc }),
+          initial,
+        );
+        return nested;
+      }
+
       where.OR = removeNumberFields(this.searchableFields, [
         ...numberFields,
         ...dateFields,
-      ]).map((field) => ({
-        [field]: {
-          contains: searchTerm,
-        },
-      }));
+      ]).map((field) =>
+        typeof field === 'string' ? buildNestedSearch(field, searchTerm) : {},
+      );
     }
 
     // --- FILTER FIELDS LOGIC (SUPPORTS NESTED KEYS) ---

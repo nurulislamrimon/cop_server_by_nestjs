@@ -57,6 +57,7 @@ export class TransactionController {
   @AllowIf('transaction:read')
   async findAllByAdmin(@Req() req: Request) {
     const where = req['where'];
+    console.dir(where, { depth: null });
     const pagination = req['pagination'] as Record<string, unknown>;
     const result = await this.transactionService.findAll({
       where,
