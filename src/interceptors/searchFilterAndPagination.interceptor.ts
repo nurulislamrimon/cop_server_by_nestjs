@@ -16,7 +16,7 @@ import {
 } from '../constants/common.constants';
 import { IModelMappingsForWhere } from '../interfaces/modelMapping.interface';
 import * as qs from 'qs';
-import { pick } from 'src/utils/pick.utils';
+import { pick } from '../utils/pick.utils';
 
 @Injectable()
 export class SearchFilterAndPaginationInterceptor<
