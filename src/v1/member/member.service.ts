@@ -22,7 +22,7 @@ export class MemberService {
     private readonly prisma: PrismaService,
     private readonly transactionService: TransactionService,
     private readonly cloudflareService: CloudflareService,
-  ) { }
+  ) {}
 
   /**
    * API: Service
@@ -151,7 +151,8 @@ export class MemberService {
         isExist.profile_photo,
       );
     }
-    const transaction_snapshot = await this.transactionService.findAMemberSnapshot(isExist.id)
+    const transaction_snapshot =
+      await this.transactionService.findAMemberSnapshot(isExist.id);
     return { ...isExist, profile_photo_url, transaction_snapshot };
   }
 

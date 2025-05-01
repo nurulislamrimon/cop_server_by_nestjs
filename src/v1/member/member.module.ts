@@ -8,4 +8,4 @@ import { TransactionService } from '../transaction/transaction.service';
   controllers: [MemberController],
   providers: [MemberService, TransactionService, MemberSessionService],
 })
-export class MemberModule { }
+export class MemberModule {}

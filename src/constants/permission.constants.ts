@@ -6,7 +6,7 @@ export const memberPermissionResources = [
   'transaction',
 
   // client side
-  'manage'
+  'manage',
 ] as const;
 
 export const permissionActions = [

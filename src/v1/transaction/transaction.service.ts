@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Injectable } from '@nestjs/common';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
@@ -6,7 +8,7 @@ import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class TransactionService {
-  constructor(private readonly prisma: PrismaService) { }
+  constructor(private readonly prisma: PrismaService) {}
 
   /**
    * API: Service
@@ -34,7 +36,6 @@ export class TransactionService {
       total,
     };
   }
-
 
   /**
    * API: Service
@@ -72,9 +73,7 @@ export class TransactionService {
    * Message: Delete - transaction
    */
   async remove(query: Prisma.TransactionDeleteArgs) {
-    return this.prisma.$transaction(async (trx) => {
-      const row = await trx.transaction.delete(query);
-    });
+    return await this.prisma.transaction.delete(query);
   }
 
   /**
@@ -91,7 +90,7 @@ export class TransactionService {
     });
 
     // Fetch all involved members
-    const memberIds = [...new Set(grouped.map(g => g.member_id))];
+    const memberIds = [...new Set(grouped.map((g) => g.member_id))];
     const members = await this.prisma.member.findMany({
       where: { id: { in: memberIds } },
       select: {
@@ -100,7 +99,7 @@ export class TransactionService {
       },
     });
 
-    const memberMap = new Map(members.map(m => [m.id, m.full_name]));
+    const memberMap = new Map(members.map((m) => [m.id, m.full_name]));
 
     // Build totals
     const memberSnapshotMap = new Map<number, any>();
@@ -163,19 +162,21 @@ export class TransactionService {
       }
     }
 
-    const data = Array.from(memberSnapshotMap.values()).map((member) => {
-      member.balance =
-        member.total_deposit_amount +
-        member.total_profit_amount -
-        member.total_withdraw_amount -
-        member.total_expense_amount -
-        member.total_loss_amount -
-        member.total_investment_amount;
+    const data = Array.from(memberSnapshotMap.values())
+      .map((member) => {
+        member.balance =
+          member.total_deposit_amount +
+          member.total_profit_amount -
+          member.total_withdraw_amount -
+          member.total_expense_amount -
+          member.total_loss_amount -
+          member.total_investment_amount;
 
-      grandTotal.total_balance += member.balance;
+        grandTotal.total_balance += member.balance;
 
-      return member;
-    }).sort((a, b) => b.balance - a.balance);
+        return member;
+      })
+      .sort((a, b) => b.balance - a.balance);
 
     return {
       data,
@@ -184,12 +185,12 @@ export class TransactionService {
   }
 
   /**
- * API: Service
- * Message: Get a transaction snapshot - transaction
- */
+   * API: Service
+   * Message: Get a transaction snapshot - transaction
+   */
   async findAMemberSnapshot(
     memberId: number,
-    where?: Prisma.TransactionWhereInput
+    where?: Prisma.TransactionWhereInput,
   ) {
     // Merge memberId into the where clause
     const effectiveWhere: Prisma.TransactionWhereInput = {
@@ -266,5 +267,4 @@ export class TransactionService {
 
     return snapshot;
   }
-
 }

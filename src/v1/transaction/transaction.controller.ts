@@ -26,7 +26,7 @@ import { AllowIf } from 'src/decorators/AllowIf.decorator';
 
 @Controller('v1/transaction')
 export class TransactionController {
-  constructor(private readonly transactionService: TransactionService) { }
+  constructor(private readonly transactionService: TransactionService) {}
 
   /**
    * API: Controller
@@ -63,9 +63,9 @@ export class TransactionController {
       include: {
         member: {
           select: {
-            full_name: true
-          }
-        }
+            full_name: true,
+          },
+        },
       },
       ...formatPagination(pagination),
     });
@@ -80,14 +80,14 @@ export class TransactionController {
   }
 
   /**
- * API: Controller
- * Message: Get All - transaction
- */
+   * API: Controller
+   * Message: Get All - transaction
+   */
   @Get('snapshot/by-admin')
   @UseInterceptors(
     new SearchFilterAndPaginationInterceptor<'Transaction'>(
       transactionSearchableFields,
-      transactionFilterableFields
+      transactionFilterableFields,
     ),
   )
   @AllowIf('transaction:read')

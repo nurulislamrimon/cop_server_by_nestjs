@@ -44,7 +44,7 @@ export class MemberController {
     private readonly memberSessionService: MemberSessionService,
     private readonly cloudflareService: CloudflareService,
     private readonly mailService: MailService,
-  ) { }
+  ) {}
 
   /**
    * API: Controller
@@ -77,7 +77,7 @@ export class MemberController {
     if (isExist) {
       throw new ConflictException('Member already exist');
     }
-    createMemberDto.id = Number(createMemberDto.id)
+    createMemberDto.id = Number(createMemberDto.id);
     const data = await this.memberService.create(createMemberDto);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...rest } = data;
@@ -188,7 +188,6 @@ export class MemberController {
     };
   }
 
-
   /**
    * API: Controller
    * Message: Get last member id - member
@@ -199,17 +198,15 @@ export class MemberController {
     const lastMember = await this.memberService.findOne({
       orderBy: { id: 'desc' },
       select: {
-        id: true
-      }
+        id: true,
+      },
     });
-
 
     return {
       message: 'Member retrieved successfully',
       data: lastMember,
     };
   }
-
 
   /**
    * API: Controller
