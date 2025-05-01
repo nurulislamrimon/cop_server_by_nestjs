@@ -62,13 +62,33 @@ export class SearchFilterAndPaginationInterceptor<
       ): Record<string, any> {
         const keys = field.split('.');
         const lastKey = keys.pop()!;
-        const value: any =
-          numberFields.includes(lastKey) && !isNaN(Number(searchTerm))
-            ? { equals: Number(searchTerm) }
-            : { contains: searchTerm, mode: 'insensitive' };
+
+        let value: any;
+        if (numberFields.includes(lastKey)) {
+          if (!isNaN(Number(searchTerm))) {
+            value = { equals: Number(searchTerm) };
+          } else {
+            return {}; // Skip invalid number filter
+          }
+        } else if (booleanFields.includes(lastKey)) {
+          if (['true', 'false'].includes(searchTerm.toLowerCase())) {
+            value = { equals: searchTerm.toLowerCase() === 'true' };
+          } else {
+            return {};
+          }
+        } else if (dateFields.includes(lastKey)) {
+          const date = new Date(searchTerm);
+          if (!isNaN(date.getTime())) {
+            value = { equals: date };
+          } else {
+            return {};
+          }
+        } else {
+          // Default to string search
+          value = { contains: searchTerm, mode: 'insensitive' };
+        }
 
         const initial: Record<string, any> = { [lastKey]: value };
-
         const nested = keys.reduceRight<Record<string, any>>(
           (acc, key) => ({ [key]: acc }),
           initial,
@@ -76,6 +96,7 @@ export class SearchFilterAndPaginationInterceptor<
 
         return nested;
       }
+
       const searchable = filterFieldsByType(this.searchableFields, dateFields);
 
       where.OR = searchable.map((field) =>
