@@ -8,7 +8,7 @@ import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class TransactionService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) { }
 
   /**
    * API: Service
@@ -81,42 +81,33 @@ export class TransactionService {
    * Message: Get transaction snapshot - transaction
    */
   async findAllSnapshot(query: Prisma.TransactionFindManyArgs) {
+    // Grouped by filtered query (for table display)
     const grouped = await this.prisma.transaction.groupBy({
       by: ['member_id', 'trx_type'],
       where: query.where,
-      _sum: {
-        amount: true,
-      },
+      _sum: { amount: true },
     });
 
-    // Fetch all involved members
+    // Grouped for all-time grand total (no filtering)
+    const grandGroup = await this.prisma.transaction.groupBy({
+      by: ['trx_type'],
+      _sum: { amount: true },
+    });
+
+    // Fetch involved members from filtered data
     const memberIds = [...new Set(grouped.map((g) => g.member_id))];
     const members = await this.prisma.member.findMany({
       where: { id: { in: memberIds } },
-      select: {
-        id: true,
-        full_name: true,
-      },
+      select: { id: true, full_name: true },
     });
 
     const memberMap = new Map(members.map((m) => [m.id, m.full_name]));
 
-    // Build totals
     const memberSnapshotMap = new Map<number, any>();
-    const grandTotal = {
-      total_deposit_amount: 0,
-      total_withdraw_amount: 0,
-      total_profit_amount: 0,
-      total_loss_amount: 0,
-      total_expense_amount: 0,
-      total_investment_amount: 0,
-      total_balance: 0,
-    };
 
     for (const row of grouped) {
-      const member_id = row.member_id;
-      const trx_type = row.trx_type;
-      const amount = row._sum.amount ?? 0;
+      const { member_id, trx_type, _sum } = row;
+      const amount = _sum.amount ?? 0;
 
       if (!memberSnapshotMap.has(member_id)) {
         memberSnapshotMap.set(member_id, {
@@ -137,52 +128,86 @@ export class TransactionService {
       switch (trx_type) {
         case 'Deposit':
           member.total_deposit_amount += amount;
-          grandTotal.total_deposit_amount += amount;
           break;
         case 'Withdraw':
           member.total_withdraw_amount += amount;
-          grandTotal.total_withdraw_amount += amount;
           break;
         case 'Profit':
           member.total_profit_amount += amount;
-          grandTotal.total_profit_amount += amount;
           break;
         case 'Loss':
           member.total_loss_amount += amount;
-          grandTotal.total_loss_amount += amount;
           break;
         case 'Expense':
           member.total_expense_amount += amount;
-          grandTotal.total_expense_amount += amount;
           break;
         case 'Investment':
           member.total_investment_amount += amount;
+          break;
+      }
+    }
+
+    const data = Array.from(memberSnapshotMap.values()).map((member) => {
+      member.balance =
+        member.total_deposit_amount +
+        member.total_profit_amount -
+        member.total_withdraw_amount -
+        member.total_expense_amount -
+        member.total_loss_amount -
+        member.total_investment_amount;
+
+      return member;
+    }).sort((a, b) => b.balance - a.balance);
+
+    // Calculate grandTotal from all-time data
+    const grandTotal = {
+      total_deposit_amount: 0,
+      total_withdraw_amount: 0,
+      total_profit_amount: 0,
+      total_loss_amount: 0,
+      total_expense_amount: 0,
+      total_investment_amount: 0,
+      total_balance: 0,
+    };
+
+    for (const row of grandGroup) {
+      const amount = row._sum.amount ?? 0;
+      switch (row.trx_type) {
+        case 'Deposit':
+          grandTotal.total_deposit_amount += amount;
+          break;
+        case 'Withdraw':
+          grandTotal.total_withdraw_amount += amount;
+          break;
+        case 'Profit':
+          grandTotal.total_profit_amount += amount;
+          break;
+        case 'Loss':
+          grandTotal.total_loss_amount += amount;
+          break;
+        case 'Expense':
+          grandTotal.total_expense_amount += amount;
+          break;
+        case 'Investment':
           grandTotal.total_investment_amount += amount;
           break;
       }
     }
 
-    const data = Array.from(memberSnapshotMap.values())
-      .map((member) => {
-        member.balance =
-          member.total_deposit_amount +
-          member.total_profit_amount -
-          member.total_withdraw_amount -
-          member.total_expense_amount -
-          member.total_loss_amount -
-          member.total_investment_amount;
-
-        grandTotal.total_balance += member.balance;
-
-        return member;
-      })
-      .sort((a, b) => b.balance - a.balance);
+    grandTotal.total_balance =
+      grandTotal.total_deposit_amount +
+      grandTotal.total_profit_amount -
+      grandTotal.total_withdraw_amount -
+      grandTotal.total_expense_amount -
+      grandTotal.total_loss_amount -
+      grandTotal.total_investment_amount;
 
     return {
       data,
       grandTotal,
     };
   }
+
 
   /**
    * API: Service
