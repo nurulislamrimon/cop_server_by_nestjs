@@ -1,4 +1,5 @@
 import { Transaction, Prisma } from '@prisma/client';
+import { memberFilterableFields } from '../member/member.constants';
 
 export const transactionFilterableFields: (keyof Transaction)[] = [
   'id',
@@ -10,10 +11,17 @@ export const transactionFilterableFields: (keyof Transaction)[] = [
   'collector_id',
   'collected_at',
   'approver_id',
+  'member.full_name',
   'created_at',
   'updated_at',
   'deleted_at',
-];
+] as unknown as (keyof Transaction)[];
+
+memberFilterableFields
+  .map((member) => `member.${member}`)
+  .forEach((member: keyof Transaction) =>
+    transactionFilterableFields.push(member),
+  );
 
 export const transactionSearchableFields: (keyof Transaction)[] = ['note'];
 
