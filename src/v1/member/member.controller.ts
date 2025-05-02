@@ -12,6 +12,7 @@ import {
   Req,
   ParseIntPipe,
   ConflictException,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import { CreateMemberDto } from './dto/create-member.dto';
 import { UpdateMemberDto } from './dto/update-member.dto';
@@ -338,8 +339,10 @@ export class MemberController {
   @AllowIf('member:delete')
   async remove(@Param('id', ParseIntPipe) id: string) {
     const data = await this.memberService.remove(+id);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password, ...rest } = data;
-    return { data: rest };
+    if (data) {
+      return { message: "Deleted successfully!" };
+    } else {
+      throw new InternalServerErrorException("Internal server error!")
+    }
   }
 }

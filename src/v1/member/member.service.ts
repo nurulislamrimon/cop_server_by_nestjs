@@ -200,9 +200,23 @@ export class MemberService {
 
   /**
    * API: Service
-   * Message: Delete - member
+   * Message: Soft Delete - member
    */
   async remove(id: number) {
+    return await this.prisma.$transaction(async (trx) => {
+      const isExist = await trx.member.findUnique({ where: { id } });
+      if (!isExist) {
+        throw new NotFoundException('Member not found!');
+      }
+      return this.prisma.member.update({ where: { id }, data: { deleted_at: new Date(), is_active: false, } });
+    });
+  }
+
+  /**
+   * API: Service
+   * Message: Delete - member
+   */
+  async hardRemove(id: number) {
     return await this.prisma.$transaction(async (trx) => {
       const isExist = await trx.member.findUnique({ where: { id } });
       if (!isExist) {
