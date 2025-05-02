@@ -126,5 +126,43 @@ enum Transaction_type_enum {
   Profit
   Loss
   Expense
-  Investment
+}
+
+model Investment {
+  id                    Int                     @id @default(autoincrement())
+  project_name          String
+  manager_name          String
+  manager_mobile        String
+  invested_amount       Float
+  return_amount         Float?
+  profit                Float?
+  loss                  Float?
+  percentage_of_returns Float?
+  investment_date       DateTime
+  maturity_date         DateTime
+  status                InvestmentStatus        @default(Active)
+  created_at            DateTime                @default(now())
+  updated_at            DateTime?               @updatedAt
+  deleted_at            DateTime?
+  additional_investment Additional_investment[] @relation("AdditionalToInvestment")
+}
+
+enum InvestmentStatus {
+  Active
+  Mature
+  Cancel
+}
+
+model Additional_investment {
+  id              Int       @id @default(autoincrement())
+  project_name    String
+  manager_name    String
+  manager_mobile  String
+  invested_amount Float
+  investment_id   Int
+  created_at      DateTime  @default(now())
+  updated_at      DateTime? @updatedAt
+  deleted_at      DateTime?
+
+  investment Investment @relation("AdditionalToInvestment", fields: [investment_id], references: [id])
 }
