@@ -44,7 +44,7 @@ export class MemberController {
     private readonly memberSessionService: MemberSessionService,
     private readonly cloudflareService: CloudflareService,
     private readonly mailService: MailService,
-  ) {}
+  ) { }
 
   /**
    * API: Controller
@@ -299,7 +299,7 @@ export class MemberController {
     const user = req['user'] as Record<string, any>;
     const id = user?.id;
     if (updateMemberDto.role) {
-      throw new BadRequestException('You can not change your role');
+      delete updateMemberDto.role
     }
     const result = await this.memberService.update(+id, updateMemberDto);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

@@ -22,7 +22,7 @@ export class MemberService {
     private readonly prisma: PrismaService,
     private readonly transactionService: TransactionService,
     private readonly cloudflareService: CloudflareService,
-  ) {}
+  ) { }
 
   /**
    * API: Service
@@ -182,15 +182,13 @@ export class MemberService {
     }
 
     let uploadUrl: string | undefined;
-    if (updateMemberDto.profile_photo) {
+    if (updateMemberDto.profile_photo && isExist?.profile_photo && updateMemberDto.profile_photo !== isExist.profile_photo) {
       const result = await this.cloudflareService.getUploadUrl(
         updateMemberDto.profile_photo,
       );
       updateMemberDto.profile_photo = result.fileName;
       uploadUrl = result.uploadUrl;
-      if (isExist.profile_photo) {
-        await this.cloudflareService.deleteFile(isExist.profile_photo);
-      }
+      await this.cloudflareService.deleteFile(isExist.profile_photo);
     }
 
     const data = await this.prisma.member.update({
