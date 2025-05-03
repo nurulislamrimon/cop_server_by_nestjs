@@ -4,6 +4,7 @@ export const memberPermissionResources = [
   'member_session',
   'committee',
   'transaction',
+  'investment',
 
   // client side
   'manage',
