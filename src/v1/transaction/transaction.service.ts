@@ -141,9 +141,6 @@ export class TransactionService {
         case 'Expense':
           member.total_expense_amount += amount;
           break;
-        case 'Investment':
-          member.total_investment_amount += amount;
-          break;
       }
     }
 
@@ -187,9 +184,6 @@ export class TransactionService {
           break;
         case 'Expense':
           grandTotal.total_expense_amount += amount;
-          break;
-        case 'Investment':
-          grandTotal.total_investment_amount += amount;
           break;
       }
     }
@@ -274,9 +268,6 @@ export class TransactionService {
           break;
         case 'Expense':
           snapshot.total_expense_amount += amount;
-          break;
-        case 'Investment':
-          snapshot.total_investment_amount += amount;
           break;
       }
     }
