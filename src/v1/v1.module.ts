@@ -5,6 +5,7 @@ import { MemberAccessRuleModule } from './member-access-rule/member-access-rule.
 import { CommitteeModule } from './committee/committee.module';
 import { TransactionModule } from './transaction/transaction.module';
 import { DashboardModule } from './dashboard/dashboard.module';
+import { InvestmentModule } from './investment/investment.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { DashboardModule } from './dashboard/dashboard.module';
     CommitteeModule,
     TransactionModule,
     DashboardModule,
+    InvestmentModule
   ],
 })
-export class V1Modules {}
+export class V1Modules { }
